@@ -25,7 +25,7 @@ coverage
 typedoc
 storybook-static
 
-*.exclude.*
+.env
 
 # yarn.lock
 *.bundle.*

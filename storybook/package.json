@@ -22,7 +22,7 @@
   "packageManager": "yarn@3.5.0",
   "scripts": {
     "start": "storybook dev -p 6006",
-    "storybook": "storybook dev -p 6006",
+    "storybook": "storybook dev --port 6006 --host localhost --no-open",
     "storybook:ci": "storybook dev -p 6006 --ci --quiet",
     "build:storybook": "storybook build"
   },

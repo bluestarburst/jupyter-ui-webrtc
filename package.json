@@ -58,6 +58,7 @@
     "storybook"
   ],
   "devDependencies": {
+    "@types/prettier": "^3.0.0",
     "babel-eslint": "^10.0.1",
     "concurrently": "^6.2.0",
     "eslint": "^5.16.0",
@@ -74,6 +75,7 @@
     "jest-prop-type-error": "^1.1.0",
     "lerna": "^8.1.2",
     "patch-package": "^8.0.0",
+    "path-browserify": "^1.0.1",
     "prettier": "^2.3.1",
     "rimraf": "^3.0.2",
     "vercel": "^21.3.3"

@@ -6,13 +6,16 @@
 
 import type { StorybookConfig } from '@storybook/react-webpack5';
 import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
 /**
  * This function is used to resolve the absolute path of a package.
  * It is needed in projects that use Yarn PnP or are set up within a monorepo.
  */
 function getAbsolutePath(value: string): any {
-  return dirname(require.resolve(join(value, 'package.json')));
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
+  return dirname(join(__dirname, '../../node_modules', value, 'package.json'));
 }
 
 const config: StorybookConfig = {
@@ -39,6 +42,27 @@ const config: StorybookConfig = {
     },
   },
   webpackFinal: config => {
+    // Add module resolution configuration
+    config.resolve = {
+      ...config.resolve,
+      alias: {
+        ...config.resolve?.alias,
+        '@datalayer/jupyter-lexical': join(dirname(fileURLToPath(import.meta.url)), '../../node_modules/@datalayer/jupyter-lexical'),
+        '@jupyterlab/application': join(dirname(fileURLToPath(import.meta.url)), '../../node_modules/@jupyterlab/application'),
+        '@jupyterlab/notebook': join(dirname(fileURLToPath(import.meta.url)), '../../node_modules/@jupyterlab/notebook'),
+        '@jupyterlab/console': join(dirname(fileURLToPath(import.meta.url)), '../../node_modules/@jupyterlab/console'),
+        // Mock JupyterLite assets
+        '../style/icons/logo-32x32.png': join(dirname(fileURLToPath(import.meta.url)), '../src/mock-assets/mock-logo.png'),
+        '../style/icons/logo-64x64.png': join(dirname(fileURLToPath(import.meta.url)), '../src/mock-assets/mock-logo.png'),
+      },
+      fallback: {
+        ...config.resolve?.fallback,
+        path: join(dirname(fileURLToPath(import.meta.url)), '../../node_modules/path-browserify'),
+        fs: false,
+        os: false,
+      },
+    };
+
     config.module?.rules?.push(
       {
         test: /\.tsx?$/,
@@ -74,6 +98,14 @@ const config: StorybookConfig = {
           presets: ['@babel/preset-react'],
           cacheDirectory: true
         }
+      },
+      // Handle all image assets
+      {
+        test: /\.(png|jpg|jpeg|gif|svg|ico)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'static/media/[name].[hash][ext]',
+        },
       },
       /*
       TODO(ECH) Disable for now to show the Lexical SVG icons.

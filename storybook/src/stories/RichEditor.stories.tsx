@@ -5,7 +5,7 @@
  */
 
 import type { Meta, StoryObj } from '@storybook/react';
-import RichEditor from '@datalayer/jupyter-lexical/lib/examples/App1';
+import RichEditor from '@datalayer/jupyter-lexical/lib/examples/AppSimple';
 
 const meta: Meta<typeof RichEditor> = {
   title: 'Components/RichEditor',

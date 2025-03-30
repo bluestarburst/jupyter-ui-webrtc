@@ -8,14 +8,14 @@
 dist
 build
 lib
-*.lock
+# *.lock
 *.sqlite
 *.tsbuildinfo
 *.egg-info
 *-lock.json
 *-error.log
 *.log
-*.lock
+# *.lock
 *.tsbuildinfo
 *-lock.yaml
 *.code-workspace
@@ -27,7 +27,7 @@ storybook-static
 
 *.exclude.*
 
-yarn.lock
+# yarn.lock
 *.bundle.*
 lib/
 node_modules/

@@ -6,10 +6,22 @@
 
 import {$isCodeNode} from '@lexical/code';
 import {$getNearestNodeFromDOMNode, LexicalEditor} from 'lexical';
-import {Options} from 'prettier';
 import {useState} from 'react';
 
 import './../../style/lexical/PrettierButton.css';
+
+interface PrettierOptions {
+  parser?: string;
+  plugins?: any[];
+  [key: string]: any;
+}
+
+interface PrettierPlugin {
+  parsers?: Record<string, any>;
+  printers?: Record<string, any>;
+  options?: Record<string, any>;
+  languages?: any[];
+}
 
 interface Props {
   lang: string;
@@ -20,25 +32,19 @@ interface Props {
 const PRETTIER_PARSER_MODULES = {
   css: [() => import('prettier/parser-postcss')],
   html: [() => import('prettier/parser-html')],
-  js: [
-    () => import('prettier/parser-babel'),
-    () => import('prettier/plugins/estree'),
-  ],
+  js: [() => import('prettier/parser-babel')],
   markdown: [() => import('prettier/parser-markdown')],
-  typescript: [
-    () => import('prettier/parser-typescript'),
-    () => import('prettier/plugins/estree'),
-  ],
+  typescript: [() => import('prettier/parser-typescript')],
 } as const;
 
 type LanguagesType = keyof typeof PRETTIER_PARSER_MODULES;
 
-async function loadPrettierParserByLang(lang: string) {
+async function loadPrettierParserByLang(lang: string): Promise<PrettierPlugin[]> {
   const dynamicImports = PRETTIER_PARSER_MODULES[lang as LanguagesType];
   const modules = await Promise.all(
     dynamicImports.map((dynamicImport) => dynamicImport()),
   );
-  return modules;
+  return modules.map(m => m.default || m);
 }
 
 async function loadPrettierFormat() {
@@ -46,7 +52,7 @@ async function loadPrettierFormat() {
   return format;
 }
 
-const PRETTIER_OPTIONS_BY_LANG: Record<string, Options> = {
+const PRETTIER_OPTIONS_BY_LANG: Record<string, PrettierOptions> = {
   css: {parser: 'css'},
   html: {parser: 'html'},
   js: {parser: 'babel'},
@@ -60,7 +66,7 @@ export function canBePrettier(lang: string): boolean {
   return LANG_CAN_BE_PRETTIER.includes(lang);
 }
 
-function getPrettierOptions(lang: string): Options {
+function getPrettierOptions(lang: string): PrettierOptions {
   const options = PRETTIER_OPTIONS_BY_LANG[lang];
   if (!options) {
     throw new Error(
@@ -96,10 +102,10 @@ export function PrettierButton({lang, editor, getCodeDOMNode}: Props) {
       const format = await loadPrettierFormat();
       const options = getPrettierOptions(lang);
       const prettierParsers = await loadPrettierParserByLang(lang);
-      options.plugins = prettierParsers.map(
-        (parser) => parser.default || parser,
-      );
-      const formattedCode = await format(content, options);
+      const formattedCode = await format(content, {
+        ...options,
+        plugins: prettierParsers
+      });
 
       editor.update(() => {
         const codeNode = $getNearestNodeFromDOMNode(codeDOMNode);

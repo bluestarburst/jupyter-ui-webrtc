@@ -37,15 +37,16 @@ export default meta;
 type Story = StoryObj<typeof Cell | typeof Jupyter | { lite: string }>;
 
 const Template = (args, { globals: { colorScheme } }) => {
-
   const { browser, initCode, ...others } = args;
-  const lite = {
-    true: true,
-    false: false,
-    '@jupyterlite/javascript-kernel-extension': import(
-      '@jupyterlite/javascript-kernel-extension'
-    ),
-  }[args.browser];
+  
+  // Handle lite option more gracefully
+  let lite: boolean | Promise<any> = false;
+  if (args.browser === 'true') {
+    lite = true;
+  } else if (args.browser === '@jupyterlite/javascript-kernel-extension') {
+    // Use a static import instead of dynamic
+    lite = require('@jupyterlite/javascript-kernel-extension');
+  }
 
   const kernelName =
     args.browser === '@jupyterlite/javascript-kernel-extension'

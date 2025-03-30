@@ -7,7 +7,7 @@
 import { YNotebook } from '@jupyter/ydoc';
 import { Cell, ICellModel } from '@jupyterlab/cells';
 import { URLExt } from '@jupyterlab/coreutils';
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle, DefaultTheme } from 'styled-components';
 import { DocumentRegistry } from '@jupyterlab/docregistry';
 import { INotebookContent } from '@jupyterlab/nbformat';
 import { INotebookModel, NotebookModel, NotebookPanel } from '@jupyterlab/notebook';
@@ -66,15 +66,14 @@ export type DatalayerNotebookExtension = DocumentRegistry.IWidgetExtension<
   get component(): JSX.Element | null;
 };
 
-const GlobalStyle = createGlobalStyle<any>`
+const GlobalStyle = createGlobalStyle<{ theme?: DefaultTheme }>`
   .dla-Box-Notebook .jp-Cell .dla-CellSidebar-Container {
     display: none;
   }
   .dla-Box-Notebook .jp-Cell.jp-mod-active .dla-CellSidebar-Container {
     display: block;
   }
-`
-
+` as any;
 
 export type INotebookProps = {
   Toolbar?: (props: INotebookToolbarProps) => JSX.Element;
@@ -499,7 +498,7 @@ export const Notebook = (props: INotebookProps) => {
         <>
           {portals?.map((portal: React.ReactPortal) => portal)}
         </>
-        <GlobalStyle/>
+        <GlobalStyle />
         <Box>
           {extensionComponents.map((extensionComponent, index) => {
             return (

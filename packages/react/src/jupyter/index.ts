@@ -18,3 +18,4 @@ export * from './lab';
 export * from './lite';
 export * from './renderers';
 export * from './services';
+export { createServiceManagerLite } from './services/ServiceManagerLite';

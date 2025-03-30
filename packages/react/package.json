@@ -1,5 +1,5 @@
 {
-  "name": "@datalayer/jupyter-react",
+  "name": "@datalayer/jupyter-react-webrtc",
   "version": "0.20.0",
   "description": "Jupyter React - React.js components 100% compatible with Jupyter.",
   "license": "MIT",
@@ -17,7 +17,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/datalayer/jupyter-ui.git",
+    "url": "git+https://github.com/bluestarbrust/jupyter-ui-webrtc.git",
     "directory": "packages/react"
   },
   "packageManager": "yarn@3.5.0",
@@ -74,6 +74,7 @@
     "@jupyter-widgets/output": "^6.0.0",
     "@jupyter/web-components": "^0.15.3",
     "@jupyter/ydoc": "3.0.2",
+    "@jupyterlab-webrtc/services": "file:../../../jupyterlab-webrtc/packages/services",
     "@jupyterlab/application": "^4.0.0",
     "@jupyterlab/application-extension": "^4.0.0",
     "@jupyterlab/apputils": "^4.0.0",
@@ -353,5 +354,14 @@
       "selector-no-vendor-prefix": null,
       "value-no-vendor-prefix": null
     }
-  }
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "author": "",
+  "types": "./lib/index.d.ts",
+  "bugs": {
+    "url": "https://github.com/bluestarbrust/jupyter-ui-webrtc/issues"
+  },
+  "homepage": "https://github.com/bluestarbrust/jupyter-ui-webrtc#readme"
 }

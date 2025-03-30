@@ -150,8 +150,9 @@ export class ContentsManagerLess implements Contents.IManager {
 }
 
 export class KernelManagerLess implements IKernelManager {
-  runningChanged: ISignal<IKernelManager, IModel[]> = new Signal(this);
-  connectionFailure: ISignal<IKernelManager, ServerConnection.NetworkError> = new Signal(this);
+  readonly runningCount: number = 0;
+  runningChanged: ISignal<IKernelManager, IModel[]> = new Signal<IKernelManager, IModel[]>(this);
+  connectionFailure: ISignal<IKernelManager, ServerConnection.NetworkError> = new Signal<IKernelManager, ServerConnection.NetworkError>(this);
   isReady: boolean = true;
   ready: Promise<void> = Promise.resolve(void 0);
   serverSettings: ServerConnection.ISettings;

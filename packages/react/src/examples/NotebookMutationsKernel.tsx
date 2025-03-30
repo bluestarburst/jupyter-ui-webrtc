@@ -10,8 +10,14 @@ import { Box, SegmentedControl, Label, Text } from '@primer/react';
 import { INotebookContent } from '@jupyterlab/nbformat';
 import { Session, ServiceManager } from '@jupyterlab/services';
 import {
-  createLiteServiceManager, createServerSettings, setJupyterServerUrl, getJupyterServerUrl,
-  getJupyterServerToken, ServiceManagerLess, loadJupyterConfig, DEFAULT_JUPYTER_SERVER_URL,
+  createServiceManagerLite,
+  createServerSettings,
+  setJupyterServerUrl,
+  getJupyterServerUrl,
+  getJupyterServerToken,
+  ServiceManagerLess,
+  loadJupyterConfig,
+  DEFAULT_JUPYTER_SERVER_URL,
 } from '../jupyter';
 import { useJupyterReactStore, OnSessionConnection } from '../state';
 import { useNotebookStore, Notebook, SpinnerCentered } from './../components';
@@ -59,7 +65,7 @@ const NotebookMutationsKernel = () => {
       }
       case 1: {
         setJupyterServerUrl(location.protocol + '//' + location.host);
-        createLiteServiceManager().then(liteServiceManager => {
+        createServiceManagerLite().then((liteServiceManager: ServiceManager.IManager) => {
           setKernelIndex(-1);
           console.log('Lite Service Manager is available', liteServiceManager);
           setServiceManager(liteServiceManager);

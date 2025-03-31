@@ -12,9 +12,9 @@ import {
   JupyterIcon,
   NotebookIcon,
 } from '@datalayer/icons-react';
-import { ServiceManager } from '@jupyterlab/services';
+import { ServiceManager } from '@jupyterlab-webrtc/services';
 import { JSONExt } from '@lumino/coreutils';
-import { IModel } from '@jupyterlab/services/lib/kernel/kernel';
+import { IModel } from '@jupyterlab-webrtc/services/lib/kernel/kernel';
 import { useJupyter } from '../../jupyter/JupyterContext';
 
 type KerneSpecInfos = {

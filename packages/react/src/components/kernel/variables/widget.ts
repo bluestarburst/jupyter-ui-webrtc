@@ -371,7 +371,7 @@ export class VariableInspectorPanel
       if (item.isWidget && rendermime) {
         const model = new OutputAreaModel({ trusted: true });
         const output = new SimplifiedOutputArea({ model, rendermime });
-        output.future = this._source!.performWidgetInspection(item.varName);
+        output.future = this._source!.performWidgetInspection(item.varName) as any;
         Widget.attach(output, cell);
       } else {
         cell.innerHTML = Private.escapeHtml(item.varContent).replace(

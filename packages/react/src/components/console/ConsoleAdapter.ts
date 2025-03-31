@@ -18,7 +18,7 @@ import {
   EditorExtensionRegistry,
   EditorThemeRegistry,
 } from '@jupyterlab/codemirror';
-import { ServiceManager } from '@jupyterlab/services';
+import { ServiceManager } from '@jupyterlab-webrtc/services';
 import { ConsolePanel } from '@jupyterlab/console';
 import { IYText } from '@jupyter/ydoc';
 import { Kernel } from '../../jupyter/kernel';
@@ -103,7 +103,7 @@ class ConsoleAdapter {
 
     const consolePanel = new ConsolePanel({
       name: kernel?.session.name,
-      manager: serviceManager,
+      manager: serviceManager as any,
       rendermime,
       path: kernel?.session.path ?? DEFAULT_CONSOLE_PATH,
       contentFactory,

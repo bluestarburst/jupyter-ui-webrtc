@@ -7,7 +7,7 @@
 
 import { IOutput } from '@jupyterlab/nbformat';
 import { IOutputAreaModel } from '@jupyterlab/outputarea';
-import { KernelMessage } from '@jupyterlab/services';
+import { KernelMessage } from '@jupyterlab-webrtc/services';
 import { Box } from '@primer/react';
 import { useEffect, useState } from 'react';
 import { Lumino } from '../lumino/Lumino';

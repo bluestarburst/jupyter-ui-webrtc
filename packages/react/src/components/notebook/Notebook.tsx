@@ -12,7 +12,7 @@ import { DocumentRegistry } from '@jupyterlab/docregistry';
 import { INotebookContent } from '@jupyterlab/nbformat';
 import { INotebookModel, NotebookModel, NotebookPanel } from '@jupyterlab/notebook';
 import { IRenderMime } from '@jupyterlab/rendermime-interfaces';
-import { Kernel as JupyterKernel, ServiceManager } from '@jupyterlab/services';
+import { Kernel as JupyterKernel, ServiceManager } from '@jupyterlab-webrtc/services';
 import { CommandRegistry } from '@lumino/commands';
 import { PromiseDelegate } from '@lumino/coreutils';
 import { Box } from '@primer/react';

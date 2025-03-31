@@ -9,7 +9,7 @@ import { Box } from '@primer/react';
 import { JupyterLab } from '@jupyterlab/application';
 import { PageConfig } from '@jupyterlab/coreutils';
 import { IRenderMime } from '@jupyterlab/rendermime-interfaces';
-import { ServiceManager } from '@jupyterlab/services';
+import { ServiceManager } from '@jupyterlab-webrtc/services';
 import { useJupyter } from '../../jupyter/JupyterContext';
 import { Colormode } from '../../theme/JupyterLabColormode';
 import { JupyterLabAppCorePlugins } from './JupyterLabAppPlugins';

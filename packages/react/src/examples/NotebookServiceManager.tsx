@@ -5,7 +5,7 @@
  */
 
 import { INotebookContent } from '@jupyterlab/nbformat';
-import { ServiceManager } from '@jupyterlab/services';
+import { ServiceManager } from '@jupyterlab-webrtc/services';
 import { Box, Button } from '@primer/react';
 import { useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';

@@ -5,7 +5,7 @@
  */
 
 import { BoxPanel } from '@lumino/widgets';
-import { TerminalManager, ServerConnection } from '@jupyterlab/services';
+import { TerminalManager, ServerConnection } from '@jupyterlab-webrtc/services';
 import { Terminal as JupyterTerminal, ITerminal } from '@jupyterlab/terminal';
 import { Terminal } from './Terminal';
 
@@ -25,7 +25,7 @@ export class TerminalAdapter {
       terminalConnection.connectionStatusChanged.connect((_, status) => {
         console.log('Jupyter Terminal status', status);
       });
-      this.terminal = new JupyterTerminal(terminalConnection, {
+      this.terminal = new JupyterTerminal(terminalConnection as any, {
         theme: colormode,
       });
       if (initCode) {

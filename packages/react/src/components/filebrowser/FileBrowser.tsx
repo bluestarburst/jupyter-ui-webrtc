@@ -7,7 +7,7 @@
 import { useState, useEffect, useReducer } from 'react';
 import { TreeView } from '@primer/react';
 import { FileIcon } from '@primer/octicons-react';
-import { ServiceManager } from '@jupyterlab/services';
+import { ServiceManager } from '@jupyterlab-webrtc/services';
 import JupyterServices from './../../jupyter/services/JupyterServices';
 
 interface RenderTree {

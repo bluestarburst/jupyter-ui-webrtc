@@ -6,7 +6,7 @@
 
 import { URLExt } from '@jupyterlab/coreutils';
 import { jupyterReactStore } from "../../state";
-import { ServerConnection, ServiceManager } from '@jupyterlab/services';
+import { ServerConnection, ServiceManager } from '@jupyterlab-webrtc/services';
 
 export type KernelRequest = {
   "kernel_type": "notebook",

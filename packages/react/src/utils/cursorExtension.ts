@@ -28,7 +28,7 @@ import {
   ViewUpdate,
   type Tooltip
 } from '@codemirror/view';
-import { User } from '@jupyterlab/services';
+import { User } from '@jupyterlab-webrtc/services';
 import { JSONExt } from '@lumino/coreutils';
 import { Awareness } from 'y-protocols/awareness';
 import {

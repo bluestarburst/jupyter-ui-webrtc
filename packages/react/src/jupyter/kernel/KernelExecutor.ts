@@ -13,8 +13,8 @@ import {
   IStream,
 } from '@jupyterlab/nbformat';
 import { IOutputAreaModel, OutputAreaModel } from '@jupyterlab/outputarea';
-import { Kernel as JupyterKernel, KernelMessage } from '@jupyterlab/services';
-import { IClearOutputMsg } from '@jupyterlab/services/lib/kernel/messages';
+import { Kernel as JupyterKernel, KernelMessage } from '@jupyterlab-webrtc/services';
+import { IClearOutputMsg } from '@jupyterlab-webrtc/services/lib/kernel/messages';
 import { PromiseDelegate } from '@lumino/coreutils';
 import { ISignal, Signal } from '@lumino/signaling';
 import { toKernelState } from '../../components/kernel';

@@ -14,9 +14,19 @@ import {
   Toolbar,
   ToolbarButton,
 } from '@jupyterlab/apputils';
-import { CodeCellModel, CodeCell, Cell, MarkdownCell, RawCell, MarkdownCellModel } from '@jupyterlab/cells';
+import {
+  CodeCellModel,
+  CodeCell,
+  Cell,
+  MarkdownCell,
+  RawCell,
+  MarkdownCellModel,
+} from '@jupyterlab/cells';
 import { IOutput } from '@jupyterlab/nbformat';
-import { Kernel as JupyterKernel, KernelMessage } from '@jupyterlab/services';
+import {
+  Kernel as JupyterKernel,
+  KernelMessage,
+} from '@jupyterlab-webrtc/services';
 import {
   ybinding,
   CodeMirrorMimeTypeService,
@@ -38,16 +48,27 @@ import {
   standardRendererFactories as initialFactories,
 } from '@jupyterlab/rendermime';
 import {
-  Session,
   ServerConnection,
   SessionManager,
   KernelManager,
   KernelSpecManager,
-} from '@jupyterlab/services';
+} from '@jupyterlab-webrtc/services';
+
+import { Session as SessionOld } from '@jupyterlab/services';
+
 import { runIcon } from '@jupyterlab/ui-components';
-import { createStandaloneCell, YCodeCell, IYText, YMarkdownCell } from '@jupyter/ydoc';
+import {
+  createStandaloneCell,
+  YCodeCell,
+  IYText,
+  YMarkdownCell,
+} from '@jupyter/ydoc';
 import { execute as executeOutput } from './../output/OutputExecutor';
-import { ClassicWidgetManager, WIDGET_MIMETYPE, WidgetRenderer } from '../../jupyter/ipywidgets/classic';
+import {
+  ClassicWidgetManager,
+  WIDGET_MIMETYPE,
+  WidgetRenderer,
+} from '../../jupyter/ipywidgets/classic';
 import { requireLoader as loader } from '../../jupyter/ipywidgets/libembed-amd';
 import Kernel from '../../jupyter/kernel/Kernel';
 import getMarked from '../notebook/marked/marked';
@@ -68,7 +89,8 @@ export class CellAdapter {
   private _type: 'code' | 'markdown' | 'raw';
 
   public constructor(options: CellAdapter.ICellAdapterOptions) {
-    const { id, type, source, outputs, serverSettings, kernel, boxOptions } = options;
+    const { id, type, source, outputs, serverSettings, kernel, boxOptions } =
+      options;
     this._id = id;
     this._outputs = outputs;
     this._kernel = kernel;
@@ -116,8 +138,8 @@ export class CellAdapter {
     this._sessionContext = new SessionContext({
       name: kernel?.path,
       path: kernel?.path,
-      sessionManager,
-      specsManager,
+      sessionManager: sessionManager as any,
+      specsManager: specsManager as any,
       type: 'python',
       kernelPreference,
     });
@@ -197,7 +219,10 @@ export class CellAdapter {
       event => {
         // Trigger and process event only in current focused cell
         const activeElement = document.activeElement;
-        if (activeElement && activeElement.closest('.dla-Jupyter-Cell') === this._cell.node) {
+        if (
+          activeElement &&
+          activeElement.closest('.dla-Jupyter-Cell') === this._cell.node
+        ) {
           commands.processKeydownEvent(event);
         }
       },
@@ -236,13 +261,15 @@ export class CellAdapter {
     if (type === 'code') {
       this._cell = new CodeCell({
         rendermime,
-        model: new CodeCellModel({sharedModel: cellModel as YCodeCell}),
+        model: new CodeCellModel({ sharedModel: cellModel as YCodeCell }),
         contentFactory: contentFactory,
       });
-    }  else if (type === 'markdown') {
+    } else if (type === 'markdown') {
       this._cell = new MarkdownCell({
         rendermime,
-        model: new MarkdownCellModel({sharedModel: cellModel as YMarkdownCell}),
+        model: new MarkdownCellModel({
+          sharedModel: cellModel as YMarkdownCell,
+        }),
         contentFactory: contentFactory,
       });
     }
@@ -253,7 +280,7 @@ export class CellAdapter {
     }
     //
     this._sessionContext.kernelChanged.connect(
-      (_, arg: Session.ISessionConnection.IKernelChangedArgs) => {
+      (_, arg: SessionOld.ISessionConnection.IKernelChangedArgs) => {
         const kernelConnection = arg.newValue;
         console.log('Current Jupyter Kernel Connection', kernelConnection);
         if (kernelConnection && !kernelConnection.handleComms) {
@@ -267,7 +294,7 @@ export class CellAdapter {
             kernelConnection.handleComms
           );
         }
-        iPyWidgetsClassicManager.registerWithKernel(kernelConnection);
+        iPyWidgetsClassicManager.registerWithKernel(kernelConnection as any);
       }
     );
     this._sessionContext.kernelChanged.connect(() => {
@@ -277,7 +304,7 @@ export class CellAdapter {
           const mimeType = mimeService.getMimeTypeByLanguage(lang);
           if (this._cell.model) {
             this._cell.model.mimeType = mimeType;
-          } 
+          }
         }
       });
     });
@@ -391,7 +418,7 @@ export class CellAdapter {
     } else if (this._type === 'markdown') {
       (this._cell as MarkdownCell).rendered = true;
     }
-  }
+  };
 
   private async _execute(
     cell: CodeCell,
@@ -411,7 +438,7 @@ export class CellAdapter {
     metadata = {
       ...model.metadata,
       ...metadata,
-      ...cellId
+      ...cellId,
     };
     const { recordTiming } = metadata;
     model.sharedModel.transact(() => {
@@ -505,7 +532,6 @@ export class CellAdapter {
       throw e;
     }
   }
-
 }
 
 export namespace CellAdapter {

@@ -5,7 +5,7 @@
  */
 
 import { URLExt } from '@jupyterlab/coreutils';
-import { ServerConnection } from '@jupyterlab/services';
+import { ServerConnection } from '@jupyterlab-webrtc/services';
 import JupyterAuthError from './JupyterAuthError';
 
 /**

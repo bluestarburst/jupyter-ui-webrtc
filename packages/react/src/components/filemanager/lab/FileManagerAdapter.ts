@@ -8,7 +8,7 @@ import { CommandRegistry } from '@lumino/commands';
 import { each } from '@lumino/algorithm';
 import { Signal } from '@lumino/signaling';
 import { DockPanel, Menu, SplitPanel, Widget } from '@lumino/widgets';
-import { ServiceManager } from '@jupyterlab/services';
+import { ServiceManager } from '@jupyterlab-webrtc/services';
 import { Dialog, ToolbarButton, showDialog } from '@jupyterlab/apputils';
 import {
   CodeMirrorEditorFactory,
@@ -62,7 +62,7 @@ class FileBrowserAdapter {
       const docRegistry = new DocumentRegistry();
       const docManager = new DocumentManager({
         registry: docRegistry,
-        manager: serviceManager,
+        manager: serviceManager as any,
         opener,
       });
       const languages = new EditorLanguageRegistry();

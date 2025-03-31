@@ -7,12 +7,12 @@
 import {
   Builder, Contents, Event, IManager, NbConvert, NbConvertManager, ServerConnection,
   ServiceManager, Setting, User, Workspace, SettingManager, WorkspaceManager,
-} from '@jupyterlab/services';
-import { BuildManager } from '@jupyterlab/services/lib/builder';
-import { IKernelConnection, IManager as IKernelManager, IModel } from '@jupyterlab/services/lib/kernel/kernel';
-import { IManager as IKernelspecManager, ISpecModels} from '@jupyterlab/services/lib/kernelspec/kernelspec';
-import {IModel as ISessionModel, ISessionConnection, IManager as ISessionManager, ISessionOptions } from '@jupyterlab/services/lib/session/session';
-import { IModel as ITerminalModel, IManager as ITerminaManager, ITerminal, ITerminalConnection } from '@jupyterlab/services/lib/terminal/terminal';
+} from '@jupyterlab-webrtc/services';
+import { BuildManager } from '@jupyterlab-webrtc/services/lib/builder';
+import { IKernelConnection, IManager as IKernelManager, IModel } from '@jupyterlab-webrtc/services/lib/kernel/kernel';
+import { IManager as IKernelspecManager, ISpecModels} from '@jupyterlab-webrtc/services/lib/kernelspec/kernelspec';
+import {IModel as ISessionModel, ISessionConnection, IManager as ISessionManager, ISessionOptions } from '@jupyterlab-webrtc/services/lib/session/session';
+import { IModel as ITerminalModel, IManager as ITerminaManager, ITerminal, ITerminalConnection } from '@jupyterlab-webrtc/services/lib/terminal/terminal';
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 import { PromiseDelegate, ReadonlyJSONObject } from '@lumino/coreutils';
 import { ISignal, Signal } from '@lumino/signaling';

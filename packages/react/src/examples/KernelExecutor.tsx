@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Box, Heading } from '@primer/react';
 import { IOutputAreaModel } from '@jupyterlab/outputarea';
-import { KernelMessage } from '@jupyterlab/services';
+import { KernelMessage } from '@jupyterlab-webrtc/services';
 import { JupyterReactTheme } from '../theme/JupyterReactTheme';
 import { useJupyter } from '../jupyter/JupyterContext';
 import { Output } from '../components/output/Output';

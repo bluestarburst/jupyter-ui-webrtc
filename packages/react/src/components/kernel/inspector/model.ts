@@ -5,7 +5,7 @@
  */
 
 import { VDomModel } from '@jupyterlab/apputils';
-import { Kernel, KernelMessage } from '@jupyterlab/services';
+import { Kernel, KernelMessage } from '@jupyterlab-webrtc/services';
 
 export type MessageThread = {
   args: Kernel.IAnyMessageArgs;

@@ -10,9 +10,9 @@ import {
   KernelMessage,
   KernelSpec,
   Session,
-} from '@jupyterlab/services';
-import { ConnectionStatus } from '@jupyterlab/services/lib/kernel/kernel';
-import { ISessionConnection } from '@jupyterlab/services/lib/session/session';
+} from '@jupyterlab-webrtc/services';
+import { ConnectionStatus } from '@jupyterlab-webrtc/services/lib/kernel/kernel';
+import { ISessionConnection } from '@jupyterlab-webrtc/services/lib/session/session';
 import { find } from '@lumino/algorithm';
 import { PromiseDelegate } from '@lumino/coreutils';
 import { getCookie, newUuid } from '../../utils/Utils';

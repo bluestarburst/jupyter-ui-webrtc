@@ -10,8 +10,8 @@ import {
   JupyterKernelIcon,
   JupyterKernelGalileoIcon,
 } from '@datalayer/icons-react';
-import { IModel } from '@jupyterlab/services/lib/kernel/kernel';
-import { ISpecModel } from '@jupyterlab/services/lib/kernelspec/kernelspec';
+import { IModel } from '@jupyterlab-webrtc/services/lib/kernel/kernel';
+import { ISpecModel } from '@jupyterlab-webrtc/services/lib/kernelspec/kernelspec';
 import { useJupyter } from '../../jupyter/JupyterContext';
 
 type Props = {

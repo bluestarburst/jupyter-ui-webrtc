@@ -50,10 +50,15 @@ import type {
   Kernel,
   ServerConnection,
   ServiceManager,
-  Session,
   SessionManager,
+} from '@jupyterlab-webrtc/services';
+
+import {
+  Session as SessionOld,
+  Kernel as KernelOld,
 } from '@jupyterlab/services';
-import type { ISessionConnection } from '@jupyterlab/services/lib/session/session';
+
+import type { ISessionConnection } from '@jupyterlab-webrtc/services/lib/session/session';
 import { find } from '@lumino/algorithm';
 import { CommandRegistry } from '@lumino/commands';
 import { PromiseDelegate } from '@lumino/coreutils';
@@ -261,7 +266,7 @@ export function BaseNotebook(props: IBaseNotebookProps): JSX.Element {
     const factory = new DummyModelFactory(model);
     const thisContext = new Context<NotebookModel>({
       factory,
-      manager: serviceManager,
+      manager: serviceManager as any,
       path,
       kernelPreference: {
         shouldStart: false,
@@ -359,7 +364,9 @@ export function BaseNotebook(props: IBaseNotebookProps): JSX.Element {
     return () => {
       widgetsManager?.dispose();
       if (thisPanel) {
-        if (thisPanel.content) Signal.clearData(thisPanel.content);
+        if (thisPanel.content) {
+          Signal.clearData(thisPanel.content);
+        }
         try {
           thisPanel.dispose();
         } catch (reason) {}
@@ -423,7 +430,7 @@ export function BaseNotebook(props: IBaseNotebookProps): JSX.Element {
             context: {
               widget: panel,
               editor,
-              session: changes.newValue,
+              session: changes.newValue as any,
             },
             providers: [provider],
             timeout: COMPLETER_TIMEOUT_MILLISECONDS,
@@ -432,12 +439,14 @@ export function BaseNotebook(props: IBaseNotebookProps): JSX.Element {
           completer.reconciliator = reconciliator;
         };
 
-        panel.context.sessionContext.sessionChanged.connect(onSessionChanged);
+        panel.context.sessionContext.sessionChanged.connect(
+          onSessionChanged as any
+        );
         panel.context.sessionContext.ready.then(() => {
           onSessionChanged?.(panel.context.sessionContext, {
             name: 'session',
             oldValue: null,
-            newValue: panel.context.sessionContext.session,
+            newValue: panel.context.sessionContext.session as any,
           });
         });
         panel.content.activeCellChanged.connect(onActiveCellChanged);
@@ -448,12 +457,14 @@ export function BaseNotebook(props: IBaseNotebookProps): JSX.Element {
       isMounted = false;
       // Reset the completer
       if (completer) {
-        if (onActiveCellChanged)
+        if (onActiveCellChanged) {
           panel?.content.activeCellChanged.disconnect(onActiveCellChanged);
-        if (onSessionChanged)
+        }
+        if (onSessionChanged) {
           panel?.context.sessionContext.sessionChanged.connect(
-            onSessionChanged
+            onSessionChanged as any
           );
+        }
 
         completer.editor = null;
         completer.reconciliator = new ProviderReconciliator({
@@ -680,7 +691,7 @@ export function useNotebookModel(options: {
       // reset for any reason while the client is still alive.
       let provider: WebsocketProvider | null = null;
       let ready = new PromiseDelegate();
-      let isMounted = true;
+      const isMounted = true;
       let sharedModel: YNotebook | null = null;
 
       const onConnectionClose = (event: any) => {
@@ -748,7 +759,7 @@ export function useNotebookModel(options: {
         } else if (collaborationServer.type == 'datalayer') {
           const { baseURL, roomName: roomName_, token } = collaborationServer;
           roomName = roomName_; // Set non local variable
-          const serverURL = URLExt.join(baseURL, `/api/spacer/v1/rooms`);
+          const serverURL = URLExt.join(baseURL, '/api/spacer/v1/rooms');
           roomURL = serverURL.replace(/^http/, 'ws');
 
           params.sessionId = await fetchSessionId({
@@ -1070,22 +1081,22 @@ function initializeContext(
     (
       _,
       args: IChangedArgs<
-        Session.ISessionConnection | null,
-        Session.ISessionConnection | null,
+        SessionOld.ISessionConnection | null,
+        SessionOld.ISessionConnection | null,
         'session'
       >
     ) => {
       const session = args.newValue;
       console.log('Current Jupyter Session Connection.', session);
-      onSessionConnection?.(session ?? undefined);
+      onSessionConnection?.((session as any) ?? undefined);
     }
   );
   context.sessionContext.kernelChanged.connect(
     (
       _,
       args: IChangedArgs<
-        Kernel.IKernelConnection | null,
-        Kernel.IKernelConnection | null,
+        KernelOld.IKernelConnection | null,
+        KernelOld.IKernelConnection | null,
         'kernel'
       >
     ) => {
@@ -1101,7 +1112,9 @@ function initializeContext(
     }
   );
   context.sessionContext.ready.then(() => {
-    onSessionConnection?.(context?.sessionContext.session ?? undefined);
+    onSessionConnection?.(
+      (context?.sessionContext.session as any) ?? undefined
+    );
   });
 
   // Initialize the context

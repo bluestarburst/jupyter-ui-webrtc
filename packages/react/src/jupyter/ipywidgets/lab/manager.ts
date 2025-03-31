@@ -23,7 +23,7 @@ import { IDisposable } from '@lumino/disposable';
 import { ReadonlyPartialJSONValue } from '@lumino/coreutils';
 import { INotebookModel } from '@jupyterlab/notebook';
 import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
-import { Kernel, KernelMessage, Session } from '@jupyterlab/services';
+import { Kernel, KernelMessage, Session } from '@jupyterlab-webrtc/services';
 import { DocumentRegistry } from '@jupyterlab/docregistry';
 import { ISignal, Signal } from '@lumino/signaling';
 import { valid } from 'semver';
@@ -156,7 +156,7 @@ export abstract class LabWidgetManager
     if (data || metadata) {
       comm.open(data, metadata, buffers);
     }
-    return new shims.services.Comm(comm);
+    return new shims.services.Comm(comm as any);
   }
 
   /**
@@ -366,8 +366,8 @@ export abstract class LabWidgetManager
     comm: Kernel.IComm,
     msg: KernelMessage.ICommOpenMsg
   ): Promise<void> => {
-    const oldComm = new shims.services.Comm(comm);
-    await this.handle_comm_open(oldComm, msg);
+    const oldComm = new shims.services.Comm(comm as any);
+    await this.handle_comm_open(oldComm, msg as any);
   };
 
   protected _restored = new Signal<this, void>(this);
@@ -479,7 +479,7 @@ export class WidgetManager extends LabWidgetManager {
     this._context = context;
 
     this._context.sessionContext.kernelChanged.connect((sender, args) => {
-      this._handleKernelChanged(args);
+      this._handleKernelChanged(args as any);
     });
 
     this._context.sessionContext.statusChanged.connect((sender, args) => {
@@ -494,7 +494,7 @@ export class WidgetManager extends LabWidgetManager {
       this._handleKernelChanged({
         name: 'kernel',
         oldValue: null,
-        newValue: this._context.sessionContext.session?.kernel,
+        newValue: this._context.sessionContext.session?.kernel as any,
       });
     }
 
@@ -609,7 +609,7 @@ export class WidgetManager extends LabWidgetManager {
   }
 
   get kernel(): Kernel.IKernelConnection | null {
-    return this._context.sessionContext?.session?.kernel ?? null;
+    return (this._context.sessionContext?.session?.kernel as any) ?? null;
   }
 
   /**

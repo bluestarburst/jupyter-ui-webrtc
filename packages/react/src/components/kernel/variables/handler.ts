@@ -6,17 +6,17 @@
 
 import { IExecuteResult } from '@jupyterlab/nbformat';
 import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
-import { KernelMessage, Kernel as JupyterKernel } from '@jupyterlab/services';
+import { KernelMessage, Kernel as JupyterKernel } from '@jupyterlab-webrtc/services';
 import {
   IExecuteInputMsg,
   IExecuteReplyMsg,
   IExecuteRequestMsg,
-} from '@jupyterlab/services/lib/kernel/messages';
+} from '@jupyterlab-webrtc/services/lib/kernel/messages';
 import { Signal, ISignal } from '@lumino/signaling';
 import { JSONModel, DataModel } from '@lumino/datagrid';
 import { IVariableInspector } from './tokens';
 import { KernelConnector } from './kernelconnector';
-import { IKernelConnection } from '@jupyterlab/services/lib/kernel/kernel';
+import { IKernelConnection } from '@jupyterlab-webrtc/services/lib/kernel/kernel';
 
 abstract class AbstractHandler implements IVariableInspector.IInspectable {
   private _isDisposed = false;

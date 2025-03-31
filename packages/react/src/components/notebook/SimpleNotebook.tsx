@@ -7,7 +7,7 @@
 import type { INotebookContent } from '@jupyterlab/nbformat';
 import type { NotebookModel } from '@jupyterlab/notebook';
 import type { IRenderMime } from '@jupyterlab/rendermime-interfaces';
-import type { ServiceManager } from '@jupyterlab/services';
+import type { ServiceManager } from '@jupyterlab-webrtc/services';
 import type { CommandRegistry } from '@lumino/commands';
 import { Box } from '@primer/react';
 import React, { useEffect, useState } from 'react';

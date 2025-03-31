@@ -6,7 +6,7 @@
 
 import { JSONObject } from '@lumino/coreutils';
 import { OutputArea } from '@jupyterlab/outputarea';
-import { KernelMessage } from '@jupyterlab/services';
+import { KernelMessage } from '@jupyterlab-webrtc/services';
 import { IExecutionPhaseOutput } from '../../jupyter/kernel';
 import { Kernel } from './../../jupyter/kernel/Kernel';
 
@@ -42,6 +42,6 @@ export async function execute(
   // TODO fix in upstream jupyterlab if possible...
   (output as any)._onIOPub = future!.onIOPub;
   (output as any)._onExecuteReply = future!.onReply;
-  output.future = future!;
+  output.future = future as any;
   return future?.done;
 }

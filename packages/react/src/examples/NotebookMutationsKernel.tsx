@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Box, SegmentedControl, Label, Text } from '@primer/react';
 import { INotebookContent } from '@jupyterlab/nbformat';
-import { Session, ServiceManager } from '@jupyterlab/services';
+import { Session, ServiceManager } from '@jupyterlab-webrtc/services';
 import {
   createServiceManagerLite,
   createServerSettings,

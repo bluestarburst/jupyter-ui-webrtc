@@ -4,15 +4,15 @@
  * MIT License
  */
 
-import { KernelMessage } from '@jupyterlab/services';
+import { KernelMessage } from '@jupyterlab-webrtc/services';
 import {
   IKernelConnection,
   IShellFuture,
-} from '@jupyterlab/services/lib/kernel/kernel';
+} from '@jupyterlab-webrtc/services/lib/kernel/kernel';
 import {
   IExecuteReplyMsg,
   IExecuteRequestMsg,
-} from '@jupyterlab/services/lib/kernel/messages';
+} from '@jupyterlab-webrtc/services/lib/kernel/messages';
 import { ISignal, Signal } from '@lumino/signaling';
 import Kernel from './../../../jupyter/kernel/Kernel';
 

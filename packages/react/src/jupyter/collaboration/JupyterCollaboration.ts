@@ -5,7 +5,7 @@
  */
 
 import { URLExt } from '@jupyterlab/coreutils';
-import { Contents, ServerConnection } from '@jupyterlab/services';
+import { Contents, ServerConnection } from '@jupyterlab-webrtc/services';
 
 export const COLLABORATION_ROOM_URL_PATH = 'api/collaboration/room';
 

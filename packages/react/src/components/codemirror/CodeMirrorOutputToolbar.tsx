@@ -18,7 +18,7 @@ import {
   StopIcon,
   PaintbrushIcon,
 } from '@primer/octicons-react';
-import { KernelMessage } from '@jupyterlab/services';
+import { KernelMessage } from '@jupyterlab-webrtc/services';
 import { EditorView } from 'codemirror';
 import OutputAdapter from '../output/OutputAdapter';
 import Kernel from '../../jupyter/kernel/Kernel';

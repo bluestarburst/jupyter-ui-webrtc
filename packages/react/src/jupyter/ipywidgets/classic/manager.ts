@@ -5,7 +5,7 @@
  */
 
 import { Widget } from '@lumino/widgets';
-import { Kernel, KernelMessage } from '@jupyterlab/services';
+import { Kernel, KernelMessage } from '@jupyterlab-webrtc/services';
 import {
   DOMWidgetView,
   WidgetModel,
@@ -98,8 +98,8 @@ export class ClassicWidgetManager extends HTMLManager {
     comm: Kernel.IComm,
     message: KernelMessage.ICommOpenMsg
   ): Promise<void> {
-    const classicComm = new shims.services.Comm(comm);
-    await this.handle_comm_open(classicComm, message);
+    const classicComm = new shims.services.Comm(comm as any);
+    await this.handle_comm_open(classicComm, message as any);
   }
 
   private _getRegistry() {
@@ -202,7 +202,7 @@ export class ClassicWidgetManager extends HTMLManager {
     if (data || metadata) {
       comm?.open(data, metadata);
     }
-    return Promise.resolve(new shims.services.Comm(comm!));
+    return Promise.resolve(new shims.services.Comm(comm as any));
   }
 
   public _get_comm_info(): Promise<any> {

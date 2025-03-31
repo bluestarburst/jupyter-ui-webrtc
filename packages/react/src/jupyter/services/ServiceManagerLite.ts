@@ -4,7 +4,7 @@
  * MIT License
  */
 
-import { ServiceManager } from '@jupyterlab/services';
+import { ServiceManager } from '@jupyterlab-webrtc/services';
 import { createLiteServer } from '../lite';
 
 export const createServiceManagerLite = (): Promise<ServiceManager.IManager> => {

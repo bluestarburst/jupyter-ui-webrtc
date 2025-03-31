@@ -7,7 +7,7 @@
 import { Cell } from '@jupyterlab/cells';
 import { ISessionContext } from '@jupyterlab/apputils';
 import { CodeEditor } from '@jupyterlab/codeeditor';
-import { KernelMessage } from '@jupyterlab/services';
+import { KernelMessage } from '@jupyterlab-webrtc/services';
 import {
   ITranslator,
   nullTranslator,
@@ -15,7 +15,7 @@ import {
 } from '@jupyterlab/translation';
 import { IDisposable } from '@lumino/disposable';
 import { Signal } from '@lumino/signaling';
-import { IKernelConnection } from '@jupyterlab/services/lib/kernel/kernel';
+import { IKernelConnection } from '@jupyterlab-webrtc/services/lib/kernel/kernel';
 
 /**
  * The definition of a console history manager object.
@@ -328,7 +328,7 @@ export class NotebookHistory implements INotebookHistory {
    * Handle the current kernel changing.
    */
   private async _handleKernel(): Promise<void> {
-    this._kernel = this._sessionContext.session?.kernel;
+    this._kernel = this._sessionContext.session?.kernel as any;
     if (!this._kernel) {
       this._history.length = 0;
       return;

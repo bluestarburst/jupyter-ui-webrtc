@@ -11,7 +11,7 @@ import { INotebookModel } from '@jupyterlab/notebook';
 import * as nbformat from '@jupyterlab/nbformat';
 import { Cell, ICellModel } from '@jupyterlab/cells';
 import { NotebookChange } from '@jupyter/ydoc';
-import { Kernel as JupyterKernel } from '@jupyterlab/services';
+import { Kernel as JupyterKernel } from '@jupyterlab-webrtc/services';
 import { Kernel } from '../../jupyter/kernel/Kernel';
 import { NotebookCommandIds } from './NotebookCommands';
 import { NotebookAdapter } from './NotebookAdapter';

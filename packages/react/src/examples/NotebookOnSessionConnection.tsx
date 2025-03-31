@@ -5,7 +5,7 @@
  */
 
 import { INotebookContent } from '@jupyterlab/nbformat';
-import { Session } from '@jupyterlab/services';
+import { Session } from '@jupyterlab-webrtc/services';
 import { Box, Label, Text } from '@primer/react';
 import { useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -43,7 +43,7 @@ const NotebookOnSessionConnection = () => {
   return (
     <JupyterReactTheme>
       <Box as="h1">A Jupyter Notebook listening to Kernel Sessions</Box>
-      <KernelDetective serviceManager={serviceManager} />
+      <KernelDetective serviceManager={serviceManager as any} />
       <Box>
         <Text as="h3">Kernel Sessions</Text>
       </Box>

@@ -19,8 +19,8 @@ import {
   CircleCurrentColorIcon,
   PlusCircleIcon
 } from '@datalayer/icons-react';
-import { KernelMessage } from '@jupyterlab/services';
-import { ConnectionStatus, IKernelConnection } from '@jupyterlab/services/lib/kernel/kernel';
+import { KernelMessage } from '@jupyterlab-webrtc/services';
+import { ConnectionStatus, IKernelConnection } from '@jupyterlab-webrtc/services/lib/kernel/kernel';
 import { Environment } from '../environment/Environment';
 
 export type ExecutionState = 

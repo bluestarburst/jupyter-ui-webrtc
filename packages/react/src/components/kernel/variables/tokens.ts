@@ -5,7 +5,7 @@
  */
 
 import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
-import { Kernel, KernelMessage } from '@jupyterlab/services';
+import { Kernel, KernelMessage } from '@jupyterlab-webrtc/services';
 import { DataModel } from '@lumino/datagrid';
 import { IObservableDisposable } from '@lumino/disposable';
 import { ISignal } from '@lumino/signaling';

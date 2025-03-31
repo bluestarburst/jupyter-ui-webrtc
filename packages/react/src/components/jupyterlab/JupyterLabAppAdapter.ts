@@ -15,7 +15,7 @@ import {
 import { DocumentRegistry } from '@jupyterlab/docregistry';
 import { IRenderMime } from '@jupyterlab/rendermime-interfaces';
 import { NotebookPanel } from '@jupyterlab/notebook';
-import { ServiceManager } from '@jupyterlab/services';
+import { ServiceManager } from '@jupyterlab-webrtc/services';
 import { JupyterLabAppProps } from './JupyterLabApp';
 
 type Plugin = JupyterFrontEndPlugin<any, any, any> & {
@@ -71,7 +71,7 @@ export class JupyterLabAppAdapter {
       shell: this._shell,
       mimeExtensions,
       devMode,
-      serviceManager,
+      serviceManager: serviceManager as any,
       disabled: {
         matches: [],
         patterns: [],
@@ -152,7 +152,7 @@ export class JupyterLabAppAdapter {
   }
 
   get serviceManager(): ServiceManager.IManager {
-    return this._jupyterLab.serviceManager;
+    return this._jupyterLab.serviceManager as any;
   }
 
   get mimeExtensions(): IRenderMime.IExtensionModule[] {

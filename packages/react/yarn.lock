@@ -2711,7 +2711,7 @@ __metadata:
 
 "@jupyterlab-webrtc/services@file:../../../jupyterlab-webrtc/packages/services::locator=%40datalayer%2Fjupyter-react-webrtc%40workspace%3A.":
   version: 7.4.0-rc.0
-  resolution: "@jupyterlab-webrtc/services@file:../../../jupyterlab-webrtc/packages/services#../../../jupyterlab-webrtc/packages/services::hash=5ea136&locator=%40datalayer%2Fjupyter-react-webrtc%40workspace%3A."
+  resolution: "@jupyterlab-webrtc/services@file:../../../jupyterlab-webrtc/packages/services#../../../jupyterlab-webrtc/packages/services::hash=b580b5&locator=%40datalayer%2Fjupyter-react-webrtc%40workspace%3A."
   dependencies:
     "@jupyter/ydoc": ^3.0.0
     "@jupyterlab/coreutils": ^6.4.0-rc.0
@@ -2724,7 +2724,7 @@ __metadata:
     "@lumino/properties": ^2.0.2
     "@lumino/signaling": ^2.1.3
     ws: ^8.11.0
-  checksum: 713170bd8e74cdd4bef151f5c9193635bca7c25821fb6d0e6aef3643844b3edbb5ed686ea3eaafd9434f4a91b5581ed85c3dcc35abe27b8ed19b84cd8a001a55
+  checksum: 008391c38e5795b9b411e31dc3f0fe70a2060c79aa700318115433a1fe967f490664b877c6b0cbcb3a8a91f57db0eaeefed6e25b588b0bd7cea1249d300b230d
   languageName: node
   linkType: hard
 

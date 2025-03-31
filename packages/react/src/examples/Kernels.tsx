@@ -7,8 +7,8 @@
 import { createRoot } from 'react-dom/client';
 import { useState } from 'react';
 import { Box, Heading, Textarea, Button, Pagehead, Text } from '@primer/react';
-import { IModel } from '@jupyterlab/services/lib/kernel/kernel';
-import { ISpecModel } from '@jupyterlab/services/lib/kernelspec/kernelspec';
+import { IModel } from '@jupyterlab-webrtc/services/lib/kernel/kernel';
+import { ISpecModel } from '@jupyterlab-webrtc/services/lib/kernelspec/kernelspec';
 import { JupyterReactTheme } from '../theme/JupyterReactTheme';
 import { useJupyter } from '../jupyter/JupyterContext';
 import {

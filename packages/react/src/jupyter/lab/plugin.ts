@@ -8,7 +8,7 @@ import { JupyterFrontEnd, JupyterFrontEndPlugin, ILayoutRestorer } from '@jupyte
 import { MainAreaWidget, ICommandPalette, WidgetTracker } from '@jupyterlab/apputils';
 import { ILauncher } from '@jupyterlab/launcher';
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
-import { ServerConnection } from '@jupyterlab/services';
+import { ServerConnection } from '@jupyterlab-webrtc/services';
 import icon from '@datalayer/icons-react/data2/AtomSymbolIconJupyterLab';
 import { requestAPI } from './../JupyterHandlers';
 import { JupyterReactWidget } from './widget';

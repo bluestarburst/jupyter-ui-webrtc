@@ -5,7 +5,7 @@
  */
 
 import { VDomRenderer, Toolbar, ToolbarButton } from '@jupyterlab/apputils';
-import { KernelMessage, Kernel } from '@jupyterlab/services';
+import { KernelMessage, Kernel } from '@jupyterlab-webrtc/services';
 import {
   caretDownIcon,
   caretRightIcon,

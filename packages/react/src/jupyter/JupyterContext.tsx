@@ -5,7 +5,7 @@
  */
 
 import React, { createContext, useContext } from 'react';
-import { Kernel as JupyterKernel, ServerConnection, ServiceManager } from '@jupyterlab/services';
+import { Kernel as JupyterKernel, ServerConnection, ServiceManager } from '@jupyterlab-webrtc/services';
 import { useJupyterReactStoreFromProps } from '../state';
 import { requestAPI } from './JupyterHandlers';
 import { Lite } from './lite';

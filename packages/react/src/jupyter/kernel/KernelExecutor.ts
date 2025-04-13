@@ -20,6 +20,7 @@ import { ISignal, Signal } from '@lumino/signaling';
 import { toKernelState } from '../../components/kernel';
 import { outputsAsString } from '../../utils/Utils';
 import { ExecutionPhase, KernelsState, kernelsStore } from './KernelState';
+import { WebRTCKernelConnection } from '../../custom/webrtc-kernel';
 
 export type IOPubMessageHook = (
   msg: KernelMessage.IIOPubMessage
@@ -36,7 +37,7 @@ export type IKernelExecutorOptions = {
   /**
    * Kernel Connection
    */
-  connection: JupyterKernel.IKernelConnection;
+  connection: WebRTCKernelConnection;
   /**
    * Outputs model to populate with the execution results.
    */
@@ -71,7 +72,7 @@ export type IExecutionPhaseOutput = {
 
 export class KernelExecutor {
   private _executed: PromiseDelegate<IOutputAreaModel>;
-  private _kernelConnection: JupyterKernel.IKernelConnection;
+  private _kernelConnection: WebRTCKernelConnection;
   private _kernelState: KernelsState;
   private _model: IOutputAreaModel;
   private _modelChanged = new Signal<KernelExecutor, IOutputAreaModel>(this);

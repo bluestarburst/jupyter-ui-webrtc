@@ -21,6 +21,7 @@ import KernelExecutor, {
   IOPubMessageHook,
   ShellMessageHook,
 } from './KernelExecutor';
+import { WebRTCKernelConnection } from '../../custom/webrtc-kernel';
 
 const JUPYTER_REACT_PATH_COOKIE_NAME = 'jupyter-react-kernel-path';
 
@@ -32,7 +33,7 @@ export class Kernel {
   private _connectionStatus: ConnectionStatus;
   private _id: string;
   private _info?: KernelMessage.IInfoReply;
-  private _kernelConnection: JupyterKernel.IKernelConnection | null;
+  private _kernelConnection: WebRTCKernelConnection | null;
   private _kernelManager: JupyterKernel.IManager;
   private _kernelName: string;
   private _kernelSpecManager: KernelSpec.IManager;
@@ -65,7 +66,10 @@ export class Kernel {
     this.requestKernel(kernelModel, path);
   }
 
-  private async requestKernel(kernelModel?: JupyterKernel.IModel, propsPath?: string): Promise<void> {
+  private async requestKernel(
+    kernelModel?: JupyterKernel.IModel,
+    propsPath?: string
+  ): Promise<void> {
     await this._kernelManager.ready;
     await this._sessionManager.ready;
     if (kernelModel) {
@@ -75,7 +79,10 @@ export class Kernel {
         return kernelModel.id === model.id;
       });
       if (existingKernelModel) {
-        console.log('Creating a session to an existing Jupyter Kernel model.', existingKernelModel);
+        console.log(
+          'Creating a session to an existing Jupyter Kernel model.',
+          existingKernelModel
+        );
         const path = 'kernel-' + kernelModel.id;
         this._path = path;
         this._session = await this._sessionManager.startNew(
@@ -83,7 +90,10 @@ export class Kernel {
             name: existingKernelModel.name,
             path: path,
             type: 'notebook',
-            kernel: existingKernelModel as Partial<JupyterKernel.IModel & Omit<JupyterKernel.IKernelOptions, 'kernelType'>>,
+            kernel: existingKernelModel as Partial<
+              JupyterKernel.IModel &
+                Omit<JupyterKernel.IKernelOptions, 'kernelType'>
+            >,
           },
           {
             kernelConnectionOptions: {
@@ -92,7 +102,10 @@ export class Kernel {
           }
         );
       } else {
-        console.log('Something is wrong... can not find an existing model for', kernelModel);
+        console.log(
+          'Something is wrong... can not find an existing model for',
+          kernelModel
+        );
         return;
       }
     } else {
@@ -102,7 +115,8 @@ export class Kernel {
         document.cookie = this.cookieName + '=' + path;
       }
       this._path = path;
-      this._session = await this._sessionManager.startNew({
+      this._session = await this._sessionManager.startNew(
+        {
           name: this._kernelName,
           path: this._path,
           type: this._kernelType,
@@ -117,7 +131,7 @@ export class Kernel {
         }
       );
     }
-    this._kernelConnection = this._session.kernel;
+    this._kernelConnection = this._session.kernel as WebRTCKernelConnection;
     const updateConnectionStatus = () => {
       if (this._connectionStatus === 'connected') {
         this._clientId = this._session.kernel!.clientId;
@@ -129,10 +143,12 @@ export class Kernel {
       this._sessionId = this._session.id;
       this._connectionStatus = this._kernelConnection.connectionStatus;
       updateConnectionStatus();
-      this._kernelConnection.connectionStatusChanged.connect((_, connectionStatus) => {
-        this._connectionStatus = connectionStatus;
-        updateConnectionStatus();
-      });
+      this._kernelConnection.connectionStatusChanged.connect(
+        (_, connectionStatus) => {
+          this._connectionStatus = connectionStatus;
+          updateConnectionStatus();
+        }
+      );
       this._kernelConnection.info.then(info => {
         this._info = info;
         console.log('Kernel Information.', info);
@@ -146,7 +162,7 @@ export class Kernel {
     return this._clientId;
   }
 
-  get connection(): JupyterKernel.IKernelConnection | null {
+  get connection(): WebRTCKernelConnection | null {
     return this._kernelConnection;
   }
 
@@ -282,7 +298,6 @@ export class Kernel {
   toString() {
     return `id:${this.id} - client_id:${this.clientId} - session_id:${this.sessionId} - path:${this._path}`;
   }
-
 }
 
 export namespace Kernel {

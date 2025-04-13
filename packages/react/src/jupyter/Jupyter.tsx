@@ -16,10 +16,7 @@ import { jupyterLabTheme, Colormode, JupyterLabCss } from '../theme';
  * Definition of the properties that can be passed
  * when creating a Jupyter context.
  */
-export type JupyterProps = Omit<
-  JupyterContextProps,
-  'variant'
-> & {
+export type JupyterProps = Omit<JupyterContextProps, 'variant'> & {
   colormode?: Colormode;
   disableCssLoading?: boolean;
   theme?: Theme;
@@ -77,7 +74,9 @@ export const Jupyter = (props: JupyterProps) => {
   return (
     <ErrorBoundary
       FallbackComponent={ErrorFallback}
-      onReset={() => {console.log('Error Boundary reset has been invoked...');}}
+      onReset={() => {
+        console.log('Error Boundary reset has been invoked...');
+      }}
     >
       <ThemeProvider
         theme={theme}
@@ -87,9 +86,9 @@ export const Jupyter = (props: JupyterProps) => {
       >
         <BaseStyles>
           <Box color="fg.default" bg="canvas.default">
-            {!config.insideJupyterLab && !disableCssLoading &&
+            {!config.insideJupyterLab && !disableCssLoading && (
               <JupyterLabCss colormode={colormode} />
-            }
+            )}
             <JupyterContextProvider
               collaborative={collaborative}
               defaultKernelName={defaultKernelName}
@@ -116,6 +115,6 @@ Jupyter.defaultProps = {
   disableCssLoading: false,
   terminals: false,
   theme: jupyterLabTheme,
-}
+};
 
 export default Jupyter;

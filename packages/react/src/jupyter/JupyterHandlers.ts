@@ -7,6 +7,7 @@
 import { URLExt } from '@jupyterlab/coreutils';
 import { ServerConnection } from '@jupyterlab/services';
 import JupyterAuthError from './JupyterAuthError';
+import { WebRTCServerConnection } from '../custom/services/webrtc-serverconnection';
 
 /**
  * Call the Jupyter server API.
@@ -16,19 +17,19 @@ import JupyterAuthError from './JupyterAuthError';
  * @returns The response body interpreted as JSON
  */
 export async function requestAPI<T>(
-  serverSettings: ServerConnection.ISettings,
+  serverSettings: WebRTCServerConnection.ISettings,
   namespace = 'api',
   endPoint = '',
-  init: RequestInit = {},
+  init: RequestInit = {}
 ): Promise<T> {
   // Make request to the Jupyter API.
   const requestUrl = URLExt.join(serverSettings.baseUrl, namespace, endPoint);
   let response: Response;
   try {
-    response = await ServerConnection.makeRequest(
+    response = await WebRTCServerConnection.makeRequest(
       requestUrl,
       init,
-      serverSettings,
+      serverSettings
     );
     if (response.status === 403) {
       throw new JupyterAuthError();
@@ -45,7 +46,10 @@ export async function requestAPI<T>(
     }
   }
   if (!response.ok) {
-    throw new ServerConnection.ResponseError(response, data.message || data);
+    throw new WebRTCServerConnection.ResponseError(
+      response,
+      data.message || data
+    );
   }
   return data;
 }

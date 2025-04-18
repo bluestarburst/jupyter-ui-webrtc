@@ -11,6 +11,7 @@ import { requestAPI } from './JupyterHandlers';
 import { Lite } from './lite';
 import { Kernel } from './kernel';
 import { WebRTCServerConnection } from '../custom/services/webrtc-serverconnection';
+import { WebRTCProvider } from './WebRTCContext';
 
 /**
  * The type for Jupyter props.
@@ -243,23 +244,26 @@ export const JupyterContextProvider: React.FC<JupyterContextProps> = props => {
     serverSettings,
     serviceManager,
   } = useJupyter(props);
+
   return (
-    <JupyterProvider
-      value={{
-        defaultKernel: kernel,
-        // FIXME we should not expose sub attributes to promote single source of truth (like URLs coming from serverSettings).
-        jupyterServerUrl,
-        kernel,
-        kernelIsLoading,
-        kernelManager: serviceManager?.kernels,
-        lite,
-        serverSettings,
-        serverless: props.serverless ?? false,
-        serviceManager,
-      }}
-    >
-      {kernelIsLoading && skeleton}
-      {children}
-    </JupyterProvider>
+    <WebRTCProvider>
+      <JupyterProvider
+        value={{
+          defaultKernel: kernel,
+          // FIXME we should not expose sub attributes to promote single source of truth (like URLs coming from serverSettings).
+          jupyterServerUrl,
+          kernel,
+          kernelIsLoading,
+          kernelManager: serviceManager?.kernels,
+          lite,
+          serverSettings,
+          serverless: props.serverless ?? false,
+          serviceManager,
+        }}
+      >
+        {kernelIsLoading && skeleton}
+        {children}
+      </JupyterProvider>
+    </WebRTCProvider>
   );
 };

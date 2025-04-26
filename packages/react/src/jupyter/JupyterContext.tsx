@@ -4,13 +4,13 @@
  * MIT License
  */
 
-import React, { createContext, useContext } from 'react';
 import { Kernel as JupyterKernel, ServiceManager } from '@jupyterlab/services';
+import React, { createContext, useContext } from 'react';
+import { WebRTCServerConnection } from '../custom/services/webrtc-serverconnection';
 import { useJupyterReactStoreFromProps } from '../state';
 import { requestAPI } from './JupyterHandlers';
-import { Lite } from './lite';
 import { Kernel } from './kernel';
-import { WebRTCServerConnection } from '../custom/services/webrtc-serverconnection';
+import { Lite } from './lite';
 import { WebRTCProvider } from './WebRTCContext';
 
 /**

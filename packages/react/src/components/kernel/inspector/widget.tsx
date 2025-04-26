@@ -4,8 +4,8 @@
  * MIT License
  */
 
-import { VDomRenderer, Toolbar, ToolbarButton } from '@jupyterlab/apputils';
-import { KernelMessage, Kernel } from '@jupyterlab/services';
+import { Toolbar, ToolbarButton, VDomRenderer } from '@jupyterlab/apputils';
+import { Kernel, KernelMessage } from '@jupyterlab/services';
 import {
   caretDownIcon,
   caretRightIcon,
@@ -13,11 +13,10 @@ import {
   jsonIcon,
 } from '@jupyterlab/ui-components';
 import { Message as luminoMessage } from '@lumino/messaging';
-import { Widget, BoxLayout } from '@lumino/widgets';
+import { BoxLayout, Widget } from '@lumino/widgets';
 import {
   ObjectInspector,
-  ObjectLabel,
-  InspectorNodeParams,
+  ObjectLabel
 } from 'react-inspector';
 import { newUuid } from '../../../utils';
 import { KernelSpyModel, ThreadIterator } from './model';
@@ -52,8 +51,18 @@ const theme = {
   TREENODE_PADDING_LEFT: 12,
 };
 
-function msgNodeRenderer(args: InspectorNodeParams) {
-  const { name, depth, isNonenumerable, data } = args;
+function msgNodeRenderer({
+  name,
+  data,
+  isNonenumerable,
+  depth,
+}: {
+  name: string;
+  depth: number;
+  isNonenumerable: boolean;
+  data: any;
+}): React.ReactElement<any> {
+  // We want to show the message ID for the top level message
   if (depth !== 0) {
     return (
       <ObjectLabel

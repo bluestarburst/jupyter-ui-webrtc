@@ -4,17 +4,17 @@
  * MIT License
  */
 
-import { createRoot } from 'react-dom/client';
-import { Box, Button, Label } from '@primer/react';
 import { CodeCell } from '@jupyterlab/cells';
-import { JupyterReactTheme } from '../theme';
-import { JupyterContextProvider, useJupyter } from '../jupyter/JupyterContext';
-import { Cell } from '../components/cell/Cell';
-import { KernelIndicator } from '../components/kernel/Kernelndicator';
-import { useKernelsStore } from '../jupyter/kernel/KernelState';
-import { useCellsStore } from '../components/cell/CellState';
-import { useWebRTC, WebRTCProvider } from '../jupyter/WebRTCContext';
+import { Box, Button, Label } from '@primer/react';
 import { useEffect } from 'react';
+import { createRoot } from 'react-dom/client';
+import { Cell } from '../components/cell/Cell';
+import { useCellsStore } from '../components/cell/CellState';
+import { KernelIndicator } from '../components/kernel/Kernelndicator';
+import { JupyterContextProvider, useJupyter } from '../jupyter/JupyterContext';
+import { useKernelsStore } from '../jupyter/kernel/KernelState';
+import { DefaultWebRTCConnection, useWebRTC, WebRTCProvider } from '../jupyter/WebRTCContext';
+import { JupyterReactTheme } from '../theme';
 
 const CELL_ID = 'cell-example-1';
 
@@ -34,94 +34,7 @@ const WebRTCCellExample = () => {
   );
 };
 
-const DefaultWebRTCConnection = () => {
-  const webRTCContext = useWebRTC();
 
-  useEffect(() => {
-    const connectToServer = async () => {
-      try {
-        // Create a new WebRTC connection with STUN server
-        const peerConnection = new RTCPeerConnection({
-          iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
-        });
-
-        // Create data channel
-        const dataChannel = peerConnection.createDataChannel("dataChannel");
-        dataChannel.onopen = () => {
-          console.log("Data channel opened");
-          webRTCContext.connect(peerConnection, dataChannel);
-        };
-        dataChannel.onclose = () => {
-          console.log("Data channel closed");
-        };
-        dataChannel.onerror = (error) => {
-          console.error("Data channel error:", error);
-        };
-
-        // Set up event handlers
-        peerConnection.onicecandidate = (event) => {
-          if (event.candidate) {
-            console.log("New ICE candidate:", event.candidate);
-          }
-        };
-
-        peerConnection.onconnectionstatechange = () => {
-          console.log("Connection state changed:", peerConnection.connectionState);
-        };
-
-        // Create and set local description
-        await peerConnection.createOffer().then((offer) => {
-          return peerConnection.setLocalDescription(offer);
-        }).then(() => {
-          return new Promise((resolve) => {
-            if (peerConnection.iceGatheringState === 'complete') {
-              resolve(undefined);
-            } else {
-              const checkState = () => {
-                if (peerConnection.iceGatheringState === 'complete') {
-                  peerConnection.removeEventListener('icegatheringstatechange', checkState);
-                  resolve(undefined);
-                }
-              };
-              peerConnection.addEventListener('icegatheringstatechange', checkState);
-            }
-          })
-        }).then(async () => {
-          const offer = peerConnection.localDescription!;
-          // send offer to server
-          const response = await fetch('http://localhost:8765/offer', {
-            method: 'POST',
-            body: JSON.stringify({ offer: offer.sdp }),
-          });
-          const answer = await response.json();
-          const answerJSON = new RTCSessionDescription({
-            type: "answer",
-            sdp: answer.sdp
-          });
-          peerConnection.setRemoteDescription(answerJSON);
-
-        }).catch((error) => {
-          console.error("Failed to create offer", error);
-        });
-
-
-        return () => {
-          peerConnection.close();
-        };
-      } catch (error) {
-        console.error("Failed to establish WebRTC connection:", error);
-      }
-    };
-
-    connectToServer();
-  }, []);
-
-  return (
-    <div>
-      <div>WebRTC Status: {webRTCContext.wsStatus}</div>
-    </div>
-  );
-};
 
 const CellExample = () => {
   const { defaultKernel } = useJupyter();

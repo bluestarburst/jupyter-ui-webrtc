@@ -8,9 +8,9 @@ import { BaseStyles, Box, ThemeProvider } from '@primer/react';
 import { Theme } from '@primer/react/lib/ThemeProvider';
 import { useMemo } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
+import { Colormode, JupyterLabCss, jupyterLabTheme } from '../theme';
 import { loadJupyterConfig } from './JupyterConfig';
 import { JupyterContextProps, JupyterContextProvider } from './JupyterContext';
-import { jupyterLabTheme, Colormode, JupyterLabCss } from '../theme';
 
 /**
  * Definition of the properties that can be passed

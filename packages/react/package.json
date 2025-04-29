@@ -230,7 +230,7 @@
     "webpack-dev-server": "^4.9.3",
     "whatwg-fetch": "^3.6.2"
   },
-    "sideEffects": [
+  "sideEffects": [
     "style/*.css",
     "src/**/*.css",
     "style/index.js"

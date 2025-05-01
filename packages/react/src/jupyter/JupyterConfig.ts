@@ -35,8 +35,16 @@ export const setJupyterServerUrl = (jupyterServerUrl: string) => {
   if (!config) {
     throw new Error("Jupyter React Config must be loaded first.")
   }
-  PageConfig.setOption('baseUrl', jupyterServerUrl);
-  PageConfig.setOption('wsUrl', jupyterServerUrl.replace(/^http/, 'ws'));
+  try {
+    // Extract just the path portion for baseUrl
+    const url = new URL(jupyterServerUrl);
+    PageConfig.setOption('baseUrl', url.pathname);
+    PageConfig.setOption('wsUrl', jupyterServerUrl.replace(/^http/, 'ws'));
+  } catch (e) {
+    // Fallback if URL parsing fails
+    PageConfig.setOption('baseUrl', jupyterServerUrl);
+    PageConfig.setOption('wsUrl', jupyterServerUrl.replace(/^http/, 'ws'));
+  }
   config.jupyterServerUrl = jupyterServerUrl;
 };
 
@@ -174,8 +182,17 @@ export const loadJupyterConfig = (
   }
   if (!config.insideJupyterLab) {
     // If not inside JupyterLab, mimick JupyterLab behavior...
-    PageConfig.setOption('baseUrl', getJupyterServerUrl());
-    PageConfig.setOption('wsUrl', getJupyterServerUrl().replace(/^http/, 'ws'));
+    try {
+      // Extract the path portion from the URL
+      const url = new URL(getJupyterServerUrl());
+      PageConfig.setOption('baseUrl', url.pathname);
+      // Keep the websocket URL as the full URL with protocol changed
+      PageConfig.setOption('wsUrl', getJupyterServerUrl().replace(/^http/, 'ws'));
+    } catch (e) {
+      // Fallback if URL parsing fails
+      PageConfig.setOption('baseUrl', getJupyterServerUrl());
+      PageConfig.setOption('wsUrl', getJupyterServerUrl().replace(/^http/, 'ws'));
+    }
     PageConfig.setOption('token', getJupyterServerToken());
     PageConfig.setOption('collaborative', String(collaborative));
     PageConfig.setOption('disableRTC', String(!collaborative));

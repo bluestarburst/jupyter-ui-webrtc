@@ -4,9 +4,9 @@
  * MIT License
  */
 
-import React from 'react';
-import BrowserOnly from '@docusaurus/core/lib/client/exports/BrowserOnly';
 import { ContentLoader } from '@datalayer/primer-addons';
+import BrowserOnly from '@docusaurus/core/lib/client/exports/BrowserOnly';
+import React from 'react';
 
 const Cell = (props: any) => {
   return (
@@ -21,8 +21,8 @@ const Cell = (props: any) => {
         return (
           <>
             <Jupyter
-              jupyterServerUrl="https://oss.datalayer.run/api/jupyter-server"
-              jupyterServerToken="60c1661cc408f978c309d04157af55c9588ff9557c9380e4fb50785750703da6"
+              jupyterServerUrl=""
+              jupyterServerToken="test"
               disableCssLoading={true}
               startDefaultKernel
               skeleton={<ContentLoader/>}

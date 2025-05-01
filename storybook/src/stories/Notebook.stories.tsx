@@ -4,8 +4,8 @@
  * MIT License
  */
 
-import type { Meta, StoryObj } from '@storybook/react';
 import { Jupyter, Notebook } from '@datalayer/jupyter-react';
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Notebook> = {
   title: 'Components/Notebook',
@@ -50,8 +50,8 @@ const Template = (args, { globals: { labComparison = true }, ...rest }) => {
       lite={lite}
       initCode={initCode}
       defaultKernelName={kernelName}
-      jupyterServerUrl="https://oss.datalayer.run/api/jupyter-server"
-      jupyterServerToken="60c1661cc408f978c309d04157af55c9588ff9557c9380e4fb50785750703da6"
+      jupyterServerUrl=""
+      jupyterServerToken="test"
     >
       <Notebook {...others} />
     </Jupyter>

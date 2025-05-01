@@ -8,7 +8,6 @@ import { JupyterFrontEnd, JupyterFrontEndPlugin, ILayoutRestorer } from '@jupyte
 import { MainAreaWidget, ICommandPalette, WidgetTracker } from '@jupyterlab/apputils';
 import { ILauncher } from '@jupyterlab/launcher';
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
-import { ServerConnection } from '@jupyterlab/services';
 import icon from '@datalayer/icons-react/data2/AtomSymbolIconJupyterLab';
 import { requestAPI } from './../JupyterHandlers';
 import { JupyterReactWidget } from './widget';
@@ -16,6 +15,7 @@ import { contentFactoryPlugin as notebookContentFactoryPlugin } from './notebook
 import { widgetFactoryPlugin as notebookWidgetFactoryPlugin } from './notebook/editor/plugin';
 
 import '../../../style/index.css';
+import { WebRTCServerConnection } from '../../custom/services/webrtc-serverconnection';
 
 /**
  * The command IDs used by the plugin.
@@ -101,7 +101,7 @@ const jupyterReactPlugin: JupyterFrontEndPlugin<void> = {
           );
         });
     }
-    requestAPI<any>(ServerConnection.makeSettings(), 'jupyter_react', 'config')
+    requestAPI<any>(WebRTCServerConnection.makeSettings(), 'jupyter_react', 'config')
       .then(data => {
         console.log(data);
       })

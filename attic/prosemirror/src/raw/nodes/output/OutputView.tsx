@@ -4,11 +4,11 @@
  * MIT License
  */
 
-import { OutputAdapter, loadJupyterConfig, createServerSettings, Kernel } from '@datalayer/jupyter-react';
+import { createServerSettings, Kernel, loadJupyterConfig, OutputAdapter } from '@datalayer/jupyter-react';
 import { KernelManager } from "@jupyterlab/services";
 import { Widget } from '@lumino/widgets';
-import { EditorView, NodeView } from "prosemirror-view";
 import { Node } from "prosemirror-model";
+import { EditorView, NodeView } from "prosemirror-view";
 
 import '@jupyterlab/output/style/base.css';
 
@@ -28,6 +28,7 @@ class OutputView implements NodeView {
     });
     const serverSettings = createServerSettings(
       config.jupyterServerUrl,
+      config.jupyterServerToken,
       );
     const kernelManager = new KernelManager({
       serverSettings,

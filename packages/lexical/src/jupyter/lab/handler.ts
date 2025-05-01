@@ -4,6 +4,7 @@
  * MIT License
  */
 
+import { WebRTCServerConnection } from '@datalayer/jupyter-react';
 import { URLExt } from '@jupyterlab/coreutils';
 import { ServerConnection } from '@jupyterlab/services';
 
@@ -19,7 +20,7 @@ export async function requestAPI<T>(
   init: RequestInit = {}
 ): Promise<T> {
   // Make request to Jupyter API
-  const settings = ServerConnection.makeSettings();
+  const settings = WebRTCServerConnection.makeSettings();
   const requestUrl = URLExt.join(
     settings.baseUrl,
     'jupyter_lexical', // API Namespace
@@ -27,7 +28,7 @@ export async function requestAPI<T>(
   );
   let response: Response;
   try {
-    response = await ServerConnection.makeRequest(requestUrl, init, settings);
+    response = await WebRTCServerConnection.makeRequest(requestUrl, init, settings);
   } catch (error: any) {
     throw new ServerConnection.NetworkError(error);
   }

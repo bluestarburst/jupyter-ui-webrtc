@@ -35,6 +35,7 @@ import {
   terminalStore,
   TerminalState,
 } from '../components/terminal/TerminalState';
+import { WebRTCServiceManager } from '../custom';
 
 export type OnSessionConnection = (
   kernelConnection: Session.ISessionConnection | undefined
@@ -205,7 +206,10 @@ export function useJupyterReactStoreFromProps(
             'You can not ask for startDefaultKernel and (useRunningKernelId or useRunningKernelIndex) at the same time.'
           );
         }
-        const serviceManager = new ServiceManager({ serverSettings });
+
+        // check if server settings is
+
+        const serviceManager = new WebRTCServiceManager({ serverSettings });
         setServiceManager(serviceManager);
         jupyterReactStore.getState().setServiceManager(serviceManager);
       });

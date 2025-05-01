@@ -4,8 +4,8 @@
  * MIT License
  */
 
+import { Cell, Jupyter } from '@datalayer/jupyter-react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { Jupyter, Cell } from '@datalayer/jupyter-react';
 import { colormodeFromScheme } from './_utils/story-helpers';
 
 const meta: Meta<typeof Cell> = {
@@ -60,8 +60,8 @@ const Template = (args, { globals: { colorScheme } }) => {
       initCode={initCode}
       colormode={colormodeFromScheme(colorScheme)}
       defaultKernelName={kernelName}
-      jupyterServerUrl="https://oss.datalayer.run/api/jupyter-server"
-      jupyterServerToken="60c1661cc408f978c309d04157af55c9588ff9557c9380e4fb50785750703da6"
+      jupyterServerUrl=""
+      jupyterServerToken="test"
     >
       <Cell {...others} />
     </Jupyter>

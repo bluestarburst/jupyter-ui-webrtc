@@ -16,6 +16,7 @@ import { IModel as ITerminalModel, IManager as ITerminaManager, ITerminal, ITerm
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 import { PromiseDelegate, ReadonlyJSONObject } from '@lumino/coreutils';
 import { ISignal, Signal } from '@lumino/signaling';
+import { WebRTCServerConnection } from '../../custom/services/webrtc-serverconnection';
 
 const WORKSPACE_JSON = `{
   "data": {
@@ -418,10 +419,10 @@ export class ServiceManagerLess implements ServiceManager.IManager {
   workspaces: Workspace.IManager;
   nbconvert: NbConvert.IManager;
   constructor(serverSettings?: ServerConnection.ISettings) {
-    this.serverSettings = serverSettings ?? ServerConnection.makeSettings({
-      baseUrl: 'https://oss.datalayer.run/api/jupyter-server',
-      wsUrl: 'wss://oss.datalayer.run/api/jupyter-server',
-      token: '60c1661cc408f978c309d04157af55c9588ff9557c9380e4fb50785750703da6',
+    this.serverSettings = serverSettings ?? WebRTCServerConnection.makeSettings({
+      baseUrl: '',
+      wsUrl: '',
+      token: 'test',
     });
     this.contents = new ContentsManagerLess(this.serverSettings);
     this.kernels = new KernelManagerLess(this.serverSettings);

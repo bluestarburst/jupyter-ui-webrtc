@@ -4,9 +4,8 @@
  * MIT License
  */
 
+import { FileBrowser, FileManagerJupyterLab, Jupyter } from '@datalayer/jupyter-react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { Jupyter, FileManagerJupyterLab, FileBrowser } from '@datalayer/jupyter-react';
-import React from 'react';
 
 const meta: Meta<typeof FileBrowser> = {
   title: 'Components/FileManager',
@@ -20,8 +19,8 @@ const Template = (args, { globals: { labComparison } }) => {
   const Tag = `${(args.as as string) ?? 'span'}` as keyof JSX.IntrinsicElements;
   return (
     <Jupyter
-      jupyterServerUrl="https://oss.datalayer.run/api/jupyter-server"
-      jupyterServerToken="60c1661cc408f978c309d04157af55c9588ff9557c9380e4fb50785750703da6"
+      jupyterServerUrl=""
+      jupyterServerToken="test"
     >
       <FileBrowser {...args} />
       {labComparison === 'display' && <FileManagerJupyterLab />}

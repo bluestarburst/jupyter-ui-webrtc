@@ -6,7 +6,9 @@
 
 import { URLExt } from '@jupyterlab/coreutils';
 import { jupyterReactStore } from '../../state';
-import { ServerConnection, ServiceManager } from '@jupyterlab/services';
+import { ServiceManager } from '@jupyterlab/services';
+import { WebRTCServerConnection } from '../../custom/services/webrtc-serverconnection';
+
 
 export type KernelRequest = {
   kernel_type: 'notebook';
@@ -79,7 +81,7 @@ export const createDatalayerServiceManager = async (
     throw response as Error;
   }
   const kernelResponse = response as KernelResponse;
-  const serverSettings = ServerConnection.makeSettings({
+  const serverSettings = WebRTCServerConnection.makeSettings({
     baseUrl: kernelResponse.kernel.ingress,
     wsUrl: kernelResponse.kernel.ingress.replace(/^http/, 'ws'),
     token: kernelResponse.kernel.token,

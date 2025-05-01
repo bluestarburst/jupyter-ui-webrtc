@@ -26,6 +26,7 @@ import { ServerConnection } from '@jupyterlab/services';
 import { WebRTCKernelAPI } from './webrtc-restapi';
 import { WebRTC } from './webrtc';
 import { CommHandler } from '@jupyterlab/services/lib/kernel/comm';
+import { WebRTCServerConnection } from './services/webrtc-serverconnection';
 
 // Stub for requirejs.
 declare let requirejs: any;
@@ -71,7 +72,7 @@ export class WebRTCKernelConnection implements Kernel.IKernelConnection {
     this._name = options.model.name;
     this._id = options.model.id;
     this.serverSettings =
-      options.serverSettings ?? ServerConnection.makeSettings();
+      options.serverSettings ?? WebRTCServerConnection.makeSettings();
     this._clientId = options.clientId ?? UUID.uuid4();
     this._username = options.username ?? '';
     this.handleComms = options.handleComms ?? true;

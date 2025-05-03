@@ -4,9 +4,9 @@
  * MIT License
  */
 
-import { Kernel as JupyterKernel, ServiceManager } from '@jupyterlab/services';
+import { Kernel as JupyterKernel, ServerConnection, ServiceManager } from '@jupyterlab/services';
 import React, { createContext, useContext } from 'react';
-import { WebRTCServerConnection } from '../custom/services/webrtc-serverconnection';
+// import { WebRTCServerConnection } from '../custom/services/webrtc-serverconnection';
 import { useJupyterReactStoreFromProps } from '../state';
 import { requestAPI } from './JupyterHandlers';
 import { Kernel } from './kernel';
@@ -139,7 +139,7 @@ export type JupyterContextType = {
    *
    * This is useless if running an in-browser kernel via {@link lite}.
    */
-  serverSettings?: WebRTCServerConnection.ISettings;
+  serverSettings?: ServerConnection.ISettings;
 };
 
 /**
@@ -200,7 +200,7 @@ export const useJupyter = (props?: JupyterPropsType): JupyterContextType => {
  * is authenticated with the Jupyter server.
  */
 export const ensureJupyterAuth = async (
-  serverSettings: WebRTCServerConnection.ISettings
+  serverSettings: ServerConnection.ISettings
 ): Promise<boolean> => {
   try {
     await requestAPI<any>(serverSettings, 'api', '');
@@ -218,7 +218,7 @@ export const createServerSettings = (
   jupyterServerUrl: string,
   jupyterServerToken: string
 ) => {
-  return WebRTCServerConnection.makeSettings({
+  return ServerConnection.makeSettings({
     baseUrl: jupyterServerUrl,
     wsUrl: jupyterServerUrl.replace(/^http/, 'ws'),
     token: jupyterServerToken,

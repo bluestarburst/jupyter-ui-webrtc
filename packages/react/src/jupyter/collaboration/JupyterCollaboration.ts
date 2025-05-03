@@ -6,7 +6,7 @@
 
 import { URLExt } from '@jupyterlab/coreutils';
 import { Contents, ServerConnection } from '@jupyterlab/services';
-import { WebRTCServerConnection } from '../../custom/services/webrtc-serverconnection';
+// import { WebRTCServerConnection } from '../../custom/services/webrtc-serverconnection';
 
 export const COLLABORATION_ROOM_URL_PATH = 'api/collaboration/room';
 
@@ -40,7 +40,7 @@ export async function requestDocSession(
   path: string,
   serverSettings?: ServerConnection.ISettings
 ): Promise<ISessionModel> {
-  const settings = serverSettings ?? WebRTCServerConnection.makeSettings();
+  const settings = serverSettings ?? ServerConnection.makeSettings();
   const url = URLExt.join(
     settings.baseUrl,
     COLLABORATION_SESSION_URL_PATH,
@@ -52,7 +52,7 @@ export async function requestDocSession(
   };
   let response: Response;
   try {
-    response = await WebRTCServerConnection.makeRequest(url, body, settings);
+    response = await ServerConnection.makeRequest(url, body, settings);
   } catch (error) {
     throw new ServerConnection.NetworkError(error as Error);
   }

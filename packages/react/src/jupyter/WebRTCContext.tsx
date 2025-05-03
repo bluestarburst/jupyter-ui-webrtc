@@ -1,5 +1,6 @@
+import { WebRTC } from '@jupyterlab/services';
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { WebRTC } from '../custom/webrtc';
+// import { WebRTC } from '../custom/webrtc';
 
 export enum WebRTCStatus {
   CONNECTED = "Connected",

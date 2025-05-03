@@ -16,7 +16,7 @@ import { IModel as ITerminalModel, IManager as ITerminaManager, ITerminal, ITerm
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 import { PromiseDelegate, ReadonlyJSONObject } from '@lumino/coreutils';
 import { ISignal, Signal } from '@lumino/signaling';
-import { WebRTCServerConnection } from '../../custom/services/webrtc-serverconnection';
+// import { WebRTCServerConnection } from '../../custom/services/webrtc-serverconnection';
 
 const WORKSPACE_JSON = `{
   "data": {
@@ -152,6 +152,7 @@ export class ContentsManagerLess implements Contents.IManager {
 
 export class KernelManagerLess implements IKernelManager {
   runningChanged: ISignal<IKernelManager, IModel[]> = new Signal(this);
+  runningCount: number;
   connectionFailure: ISignal<IKernelManager, ServerConnection.NetworkError> = new Signal(this);
   isReady: boolean = true;
   ready: Promise<void> = Promise.resolve(void 0);
@@ -419,7 +420,7 @@ export class ServiceManagerLess implements ServiceManager.IManager {
   workspaces: Workspace.IManager;
   nbconvert: NbConvert.IManager;
   constructor(serverSettings?: ServerConnection.ISettings) {
-    this.serverSettings = serverSettings ?? WebRTCServerConnection.makeSettings({
+    this.serverSettings = serverSettings ?? ServerConnection.makeSettings({
       baseUrl: '',
       wsUrl: '',
       token: 'test',

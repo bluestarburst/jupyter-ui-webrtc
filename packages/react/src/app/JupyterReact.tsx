@@ -8,7 +8,8 @@ import { ReactJsIcon, RingedPlanetIcon } from '@datalayer/icons-react';
 import { JupyterFrontEnd } from '@jupyterlab/application';
 import { Box, UnderlineNav } from '@primer/react';
 import { useEffect, useState } from 'react';
-import { WebRTCServerConnection } from '../custom/services/webrtc-serverconnection';
+// import { WebRTCServerConnection } from '../custom/services/webrtc-serverconnection';
+import { ServerConnection } from '@jupyterlab/services';
 import { requestAPI } from '../jupyter/JupyterHandlers';
 import { JupyterReactTheme } from '../theme';
 import { AboutTab } from './tabs/AboutTab';
@@ -23,7 +24,7 @@ const JupyterReact = (props: JupyterFrontEndProps): JSX.Element => {
   const [tab, setTab] = useState(1);
   const [version, setVersion] = useState('');
   useEffect(() => {
-    requestAPI<any>(WebRTCServerConnection.makeSettings(), 'jupyter_react', 'config')
+    requestAPI<any>(ServerConnection.makeSettings(), 'jupyter_react', 'config')
       .then(data => {
         setVersion(data.version);
       })

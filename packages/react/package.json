@@ -117,7 +117,7 @@
     "@jupyterlab/rendermime": "^4.0.0",
     "@jupyterlab/rendermime-extension": "^4.0.0",
     "@jupyterlab/rendermime-interfaces": "^3.9.0",
-    "@jupyterlab/services": "^7.0.0",
+    "@jupyterlab/services": "file:../../../jupyterlab-webrtc/packages/services",
     "@jupyterlab/settingregistry": "^4.0.0",
     "@jupyterlab/shortcuts-extension": "^4.0.0",
     "@jupyterlab/statusbar-extension": "^4.0.0",

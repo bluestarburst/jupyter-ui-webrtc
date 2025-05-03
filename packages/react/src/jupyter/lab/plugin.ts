@@ -15,7 +15,8 @@ import { contentFactoryPlugin as notebookContentFactoryPlugin } from './notebook
 import { widgetFactoryPlugin as notebookWidgetFactoryPlugin } from './notebook/editor/plugin';
 
 import '../../../style/index.css';
-import { WebRTCServerConnection } from '../../custom/services/webrtc-serverconnection';
+import { ServerConnection } from '@jupyterlab/services';
+// import { WebRTCServerConnection } from '../../custom/services/webrtc-serverconnection';
 
 /**
  * The command IDs used by the plugin.
@@ -101,7 +102,7 @@ const jupyterReactPlugin: JupyterFrontEndPlugin<void> = {
           );
         });
     }
-    requestAPI<any>(WebRTCServerConnection.makeSettings(), 'jupyter_react', 'config')
+    requestAPI<any>(ServerConnection.makeSettings(), 'jupyter_react', 'config')
       .then(data => {
         console.log(data);
       })

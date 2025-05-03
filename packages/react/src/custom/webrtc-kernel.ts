@@ -10,7 +10,7 @@ import { ISignal, Signal } from '@lumino/signaling';
 
 // import { KernelMessage, ServerConnection } from '@jupyterlab/services';
 
-import { Kernel, KernelConnection } from '@jupyterlab/services/lib/kernel';
+import { Kernel, KernelAPI, KernelConnection } from '@jupyterlab/services/lib/kernel';
 
 import * as KernelMessage from '@jupyterlab/services/lib/kernel/messages';
 
@@ -22,11 +22,8 @@ import {
 
 import { KernelSpec, KernelSpecAPI } from '@jupyterlab/services/lib/kernelspec';
 
-import { ServerConnection } from '@jupyterlab/services';
-import { WebRTCKernelAPI } from './webrtc-restapi';
-import { WebRTC } from './webrtc';
+import { ServerConnection, WebRTC } from '@jupyterlab/services';
 import { CommHandler } from '@jupyterlab/services/lib/kernel/comm';
-import { WebRTCServerConnection } from './services/webrtc-serverconnection';
 
 // Stub for requirejs.
 declare let requirejs: any;
@@ -72,7 +69,7 @@ export class WebRTCKernelConnection implements Kernel.IKernelConnection {
     this._name = options.model.name;
     this._id = options.model.id;
     this.serverSettings =
-      options.serverSettings ?? WebRTCServerConnection.makeSettings();
+      options.serverSettings ?? ServerConnection.makeSettings();
     this._clientId = options.clientId ?? UUID.uuid4();
     this._username = options.username ?? '';
     this.handleComms = options.handleComms ?? true;
@@ -527,7 +524,7 @@ export class WebRTCKernelConnection implements Kernel.IKernelConnection {
     if (this.status === 'dead') {
       throw new Error('Kernel is dead');
     }
-    return WebRTCKernelAPI.interruptKernel(this.id, this.serverSettings);
+    return KernelAPI.interruptKernel(this.id, this.serverSettings);
   }
 
   /**
@@ -555,7 +552,7 @@ export class WebRTCKernelConnection implements Kernel.IKernelConnection {
     this._updateStatus('restarting');
     this._clearKernelState();
     this._kernelSession = RESTARTING_KERNEL_SESSION;
-    await WebRTCKernelAPI.restartKernel(this.id, this.serverSettings);
+    await KernelAPI.restartKernel(this.id, this.serverSettings);
     // Reconnect to the kernel to address cases where kernel ports
     // have changed during the restart.
     await this.reconnect();
@@ -613,7 +610,7 @@ export class WebRTCKernelConnection implements Kernel.IKernelConnection {
    */
   async shutdown(): Promise<void> {
     if (this.status !== 'dead') {
-      await WebRTCKernelAPI.shutdownKernel(this.id, this.serverSettings);
+      await KernelAPI.shutdownKernel(this.id, this.serverSettings);
     }
     this.handleShutdown();
   }
@@ -1520,7 +1517,7 @@ export class WebRTCKernelConnection implements Kernel.IKernelConnection {
       this._reason = '';
       this._model = undefined;
       try {
-        const model = await WebRTCKernelAPI.getKernelModel(this._id, settings);
+        const model = await KernelAPI.getKernelModel(this._id, settings);
         this._model = model;
         if (model?.execution_state === 'dead') {
           this._updateStatus('dead');

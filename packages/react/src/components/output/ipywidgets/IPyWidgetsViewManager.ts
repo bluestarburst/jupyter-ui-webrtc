@@ -35,10 +35,19 @@ export class IPyWidgetsViewManager extends ManagerBase {
             );
             (window as any).require(
               [
-                `https://cdn.jsdelivr.net/npm/${moduleName}@${moduleVersion}/dist/index.js`,
+                `https://cdn.jsdelivr.net/npm/${moduleName}@${moduleVersion}/lib/index.js`,
               ],
               resolve,
-              reject
+              (err: any) => {
+                (window as any).require(
+                  [
+                    `https://cdn.jsdelivr.net/npm/${moduleName}@${moduleVersion}/dist/index.js`,
+                  ],
+                  resolve,
+                  reject
+
+                );
+              }
             );
           } else {
             throw err;

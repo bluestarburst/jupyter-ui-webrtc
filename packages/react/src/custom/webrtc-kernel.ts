@@ -1696,6 +1696,7 @@ export class WebRTCKernelConnection implements Kernel.IKernelConnection {
         }
         case 'comm_open':
           if (this.handleComms) {
+            console.log('WEBRTC UI handleCommOpen', msg);
             await this._handleCommOpen(msg as KernelMessage.ICommOpenMsg);
           }
           break;

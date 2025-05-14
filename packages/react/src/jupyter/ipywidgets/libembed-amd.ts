@@ -36,7 +36,7 @@ const requirePromise = function (pkg: string | string[]): Promise<any> {
   });
 };
 
-function moduleNameToCDNUrl(moduleName: string, moduleVersion: string): string {
+function moduleNameToCDNUrl(moduleName: string, moduleVersion: string): string[] {
   let packageName = moduleName;
   let fileName = 'index'; // default filename
   // if a '/' is present, like 'foo/bar', packageName is changed to 'foo', and path to 'bar'
@@ -57,7 +57,10 @@ function moduleNameToCDNUrl(moduleName: string, moduleVersion: string): string {
     moduleVersion = moduleVersion.replace('0.4.2', '0.4.1')
   }
   // jupyter-react@0.4.1
-  return `${CDN_URL}${packageName}@${moduleVersion}/dist/${fileName}`;
+  return [
+    `${CDN_URL}${packageName}@${moduleVersion}/lib/${fileName}`, 
+    `${CDN_URL}${packageName}@${moduleVersion}/dist/${fileName}`
+  ];
 }
 
 /**
@@ -84,9 +87,22 @@ export function requireLoader(
   }
   function loadFromCDN(): Promise<any> {
     const conf: { paths: { [key: string]: string } } = { paths: {} };
-    conf.paths[moduleName] = moduleNameToCDNUrl(moduleName, moduleVersion);
-    require.config(conf);
-    return requirePromise([`${moduleName}`]);
+    const urls = moduleNameToCDNUrl(moduleName, moduleVersion);
+    try {
+      conf.paths[moduleName] = urls[0];
+      require.config(conf);
+      return requirePromise([`${moduleName}`]);
+    } catch (error) { 
+      try {
+        // try the second URL
+        conf.paths[moduleName] = urls[1];
+        require.config(conf);
+        return requirePromise([`${moduleName}`]);
+      } catch (error) {
+        console.error('Error loading from CDN:', error);
+        throw error;
+      }
+    }
   }
   if (CDN_ONLY) {
     console.log(`Loading from ${CDN_URL} for ${moduleName}@${moduleVersion}`);

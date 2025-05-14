@@ -236,6 +236,10 @@ export abstract class LabWidgetManager
     }
     */
 
+    console.log(
+      `LABWIDGETMANAGER Loading class ${className} from module ${moduleName}, version ${moduleVersion}`
+    );
+
     let allVersions = this._getRegistry().getAllVersions(moduleName);
     const semanticVersion =
       moduleVersion.split('.').length === 2
@@ -367,6 +371,9 @@ export abstract class LabWidgetManager
     comm: Kernel.IComm,
     msg: KernelMessage.ICommOpenMsg
   ): Promise<void> => {
+
+    console.log(
+      `LABWIDGETMANAGER _handleCommOpen: `, comm, msg.content);
     const oldComm = new shims.services.Comm(comm);
     await this.handle_comm_open(oldComm, msg);
   };

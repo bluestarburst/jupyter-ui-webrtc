@@ -98,6 +98,8 @@ export class ClassicWidgetManager extends HTMLManager {
     comm: Kernel.IComm,
     message: KernelMessage.ICommOpenMsg
   ): Promise<void> {
+
+    console.log(`CLASSICWIDGETMANAGER _handleCommOpen: `, comm, message.content);
     const classicComm = new shims.services.Comm(comm);
     await this.handle_comm_open(classicComm, message);
   }
@@ -143,11 +145,18 @@ export class ClassicWidgetManager extends HTMLManager {
       moduleVersion = `^${moduleVersion}`;
     }
 
+    console.log(
+      `CLASSICWIDGETMANAGER Loading ${className} from ${moduleName} version ${moduleVersion}`
+    );
+
     let allVersions = this._getRegistry().getAllVersions(moduleName);
     const semanticVersion =
       moduleVersion.split('.').length === 2
         ? moduleVersion + '.0'
         : moduleVersion;
+
+    console.log(`Loading module ${moduleName} with version ${semanticVersion}`);      
+        
     if (!allVersions) {
       const module = await requireLoader(moduleName, semanticVersion);
       const widgetRegistryData = {
@@ -155,6 +164,11 @@ export class ClassicWidgetManager extends HTMLManager {
         version: semanticVersion.replaceAll('^', ''),
         exports: { ...module },
       };
+
+      console.log(
+        `CLASSICWIDGETMANAGER Loading ${className} from ${moduleName} version ${moduleVersion}`,
+        widgetRegistryData
+      );
       this.register(widgetRegistryData);
       allVersions = this._getRegistry().getAllVersions(moduleName);
       if (!allVersions) {
@@ -171,6 +185,13 @@ export class ClassicWidgetManager extends HTMLManager {
         }`
       );
     }
+
+    console.log(
+      `CLASSICWIDGETMANAGER Loading ${className} from ${moduleName} version ${moduleVersion}`,
+      mod,
+      allVersions
+    );
+
     let module: ExportMap;
     if (typeof mod === 'function') {
       module = await mod();

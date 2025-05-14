@@ -76,6 +76,11 @@ export class Kernel {
       await this._kernelManager.refreshRunning();
       const runningKernels = Array.from(this.kernelManager.running());
       const existingKernelModel = find(runningKernels, model => {
+        console.log(
+          'Checking if kernel model is already running',
+          model,
+          kernelModel
+        );
         return kernelModel.id === model.id;
       });
       if (existingKernelModel) {
@@ -115,6 +120,15 @@ export class Kernel {
         document.cookie = this.cookieName + '=' + path;
       }
       this._path = path;
+
+      console.log(
+        'Creating a new Jupyter Kernel session.',
+        this._kernelName,
+        this._kernelType,
+        this._kernelSpecName,
+        this._path
+      );
+
       this._session = await this._sessionManager.startNew(
         {
           name: this._kernelName,

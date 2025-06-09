@@ -16,7 +16,7 @@ import { WidgetRenderer, WIDGET_MIMETYPE } from './output_renderers';
 
 import * as widgets from '@jupyter-widgets/controls';
 import * as base from '@jupyter-widgets/base';
-import * as outputWidgets from '@jupyter-widgets/html-manager/lib/output';
+import * as outputWidgets from '@jupyter-widgets/output';
 
 export class HTMLManager extends ManagerBase {
   private _viewList: Set<DOMWidgetView>;

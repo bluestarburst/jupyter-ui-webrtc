@@ -36,9 +36,8 @@ export const setJupyterServerUrl = (jupyterServerUrl: string) => {
     throw new Error("Jupyter React Config must be loaded first.")
   }
   try {
-    // Extract just the path portion for baseUrl
-    const url = new URL(jupyterServerUrl);
-    PageConfig.setOption('baseUrl', url.pathname);
+    // Use the full URL for baseUrl instead of just the pathname
+    PageConfig.setOption('baseUrl', jupyterServerUrl);
     PageConfig.setOption('wsUrl', jupyterServerUrl.replace(/^http/, 'ws'));
   } catch (e) {
     // Fallback if URL parsing fails
@@ -183,9 +182,8 @@ export const loadJupyterConfig = (
   if (!config.insideJupyterLab) {
     // If not inside JupyterLab, mimick JupyterLab behavior...
     try {
-      // Extract the path portion from the URL
-      const url = new URL(getJupyterServerUrl());
-      PageConfig.setOption('baseUrl', url.pathname);
+      // Use the full URL for baseUrl instead of just the pathname
+      PageConfig.setOption('baseUrl', getJupyterServerUrl());
       // Keep the websocket URL as the full URL with protocol changed
       PageConfig.setOption('wsUrl', getJupyterServerUrl().replace(/^http/, 'ws'));
     } catch (e) {

@@ -1074,11 +1074,14 @@ export class WebRTCKernelConnection implements Kernel.IKernelConnection {
     ) => void | PromiseLike<void>
   ): void {
     console.log('registerCommTarget', targetName, callback, this.handleComms);
+    console.log('Current target registry before registration:', Object.keys(this._targetRegistry));
     if (!this.handleComms) {
+      console.warn('Comm handling is disabled, skipping registration');
       return;
     }
 
     this._targetRegistry[targetName] = callback;
+    console.log('Target registry after registration:', Object.keys(this._targetRegistry));
   }
 
   /**
@@ -1349,7 +1352,7 @@ export class WebRTCKernelConnection implements Kernel.IKernelConnection {
     console.log('Create Comm OPEN', comm);
     this._comms.set(content.comm_id, comm);
 
-    console.log('handleCommOpen', content, this._targetRegistry);
+    console.log('WebRTC handleCommOpen for kernel:', this.id, 'target:', content.target_name, 'registry:', Object.keys(this._targetRegistry));
 
     try {
       const target = await Private.loadObject(
@@ -1358,14 +1361,14 @@ export class WebRTCKernelConnection implements Kernel.IKernelConnection {
         this._targetRegistry
       );
 
-      console.log('Target', target);
+      console.log('WebRTC kernel', this.id, 'found target:', target);
 
       await target(comm, msg);
     } catch (e) {
       // Close the comm asynchronously. We cannot block message processing on
       // kernel messages to wait for another kernel message.
       comm.close();
-      console.error('Exception opening new comm', e);
+      console.error('WebRTC kernel', this.id, 'Exception opening new comm for target', content.target_name, e);
       throw e;
     }
   }

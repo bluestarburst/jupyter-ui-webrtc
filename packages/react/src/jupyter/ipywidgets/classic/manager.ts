@@ -27,6 +27,7 @@ import { HTMLManager } from './htmlmanager';
 
 import * as base from '@jupyter-widgets/base';
 import * as controls from '@jupyter-widgets/controls';
+import * as output from '@jupyter-widgets/output';
 
 /**
  * The class is responsible for the classic IPyWidgets rendering.
@@ -36,25 +37,47 @@ export class ClassicWidgetManager extends HTMLManager {
   private _commRegistration: any;
   private _onError: any;
   private _registry: SemVerCache<ExportData>;
+  private _isInitialized: boolean = false;
+  private _initializationPromise: Promise<void>;
 
   constructor(options?: {
     loader?: (moduleName: string, moduleVersion: string) => Promise<any>;
   }) {
     super(options);
-    const requireJsScript = document.createElement('script');
-    const cdnOnlyScript = document.createElement('script');
-    cdnOnlyScript.setAttribute('data-jupyter-widgets-cdn-only', 'true');
-    document.body.appendChild(cdnOnlyScript);
-    requireJsScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js';
-    document.body.appendChild(requireJsScript);
-    requireJsScript.onload = () => {
-      (window as any).define('@jupyter-widgets/base', base);
-      (window as any).define('@jupyter-widgets/controls', controls);
-      this._registry = new SemVerCache<ExportData>();
-      this.register = this.register.bind(this);
-      this.registerWithKernel = this.registerWithKernel.bind(this);
-      this._getRegistry = this._getRegistry.bind(this);
-      this._handleCommOpen = this._handleCommOpen.bind(this);
+    
+    // Initialize registry immediately to avoid undefined access
+    this._registry = new SemVerCache<ExportData>();
+    this._kernelConnection = null;
+    
+    // Bind methods immediately
+    this.register = this.register.bind(this);
+    this.registerWithKernel = this.registerWithKernel.bind(this);
+    this._getRegistry = this._getRegistry.bind(this);
+    this._handleCommOpen = this._handleCommOpen.bind(this);
+    
+    // Set up initialization promise
+    this._initializationPromise = this._initializeRequireJS();
+  }
+
+  private async _initializeRequireJS(): Promise<void> {
+    if (this._isInitialized) {
+      return;
+    }
+
+    try {
+      // Check if RequireJS is already available
+      if (typeof (window as any).requirejs === 'undefined') {
+        await this._loadRequireJS();
+      }
+
+      // Define AMD modules
+      if (typeof (window as any).define !== 'undefined') {
+        (window as any).define('@jupyter-widgets/base', base);
+        (window as any).define('@jupyter-widgets/controls', controls);
+        (window as any).define('@jupyter-widgets/output', output);
+      }
+
+      // Register core widget packages
       this.register({
         name: '@jupyter-widgets/base',
         version: base.JUPYTER_WIDGETS_VERSION,
@@ -65,7 +88,46 @@ export class ClassicWidgetManager extends HTMLManager {
         version: controls.JUPYTER_CONTROLS_VERSION,
         exports: () => import('@jupyter-widgets/controls') as any,
       });
-    };  
+      this.register({
+        name: '@jupyter-widgets/output',
+        version: output.OUTPUT_WIDGET_VERSION,
+        exports: () => import('@jupyter-widgets/output') as any,
+      });
+
+      this._isInitialized = true;
+    } catch (error) {
+      console.error('Failed to initialize ClassicWidgetManager:', error);
+      throw error;
+    }
+  }
+
+  private _loadRequireJS(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      // Check if script is already loaded
+      const existingScript = document.querySelector('script[src*="require.js"]');
+      if (existingScript) {
+        resolve();
+        return;
+      }
+
+      const requireJsScript = document.createElement('script');
+      const cdnOnlyScript = document.createElement('script');
+      
+      cdnOnlyScript.setAttribute('data-jupyter-widgets-cdn-only', 'true');
+      document.body.appendChild(cdnOnlyScript);
+      
+      requireJsScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js';
+      requireJsScript.onload = () => resolve();
+      requireJsScript.onerror = () => reject(new Error('Failed to load RequireJS'));
+      
+      document.body.appendChild(requireJsScript);
+    });
+  }
+
+  private async _ensureInitialized(): Promise<void> {
+    if (!this._isInitialized) {
+      await this._initializationPromise;
+    }
   }
 
   /**
@@ -81,13 +143,14 @@ export class ClassicWidgetManager extends HTMLManager {
     }
   }
 
-  public registerWithKernel(kernelConnection: Kernel.IKernelConnection | null) {
+  public async registerWithKernel(kernelConnection: Kernel.IKernelConnection | null) {
+    await this._ensureInitialized();
     this._kernelConnection = kernelConnection;
     if (this._commRegistration) {
       this._commRegistration.dispose();
     }
     if (kernelConnection) {
-      kernelConnection.registerCommTarget(
+      this._commRegistration = kernelConnection.registerCommTarget(
         this.comm_target_name,
         this._handleCommOpen
       );
@@ -98,10 +161,15 @@ export class ClassicWidgetManager extends HTMLManager {
     comm: Kernel.IComm,
     message: KernelMessage.ICommOpenMsg
   ): Promise<void> {
-
-    console.log(`CLASSICWIDGETMANAGER _handleCommOpen: `, comm, message.content);
-    const classicComm = new shims.services.Comm(comm);
-    await this.handle_comm_open(classicComm, message);
+    try {
+      await this._ensureInitialized();
+      console.log(`CLASSICWIDGETMANAGER _handleCommOpen: `, comm, message.content);
+      const classicComm = new shims.services.Comm(comm);
+      await this.handle_comm_open(classicComm, message);
+    } catch (error) {
+      console.error('Error in _handleCommOpen:', error);
+      throw error;
+    }
   }
 
   private _getRegistry() {
@@ -133,13 +201,16 @@ export class ClassicWidgetManager extends HTMLManager {
     moduleName: string,
     moduleVersion: string
   ): Promise<typeof WidgetModel | typeof WidgetView> {
-    // Special-case the Jupyter base and controls packages. If we have just a
+    await this._ensureInitialized();
+    
+    // Special-case the Jupyter base, controls, and output packages. If we have just a
     // plain version, with no indication of the compatible range, prepend a ^ to
     // get all compatible versions. We may eventually apply this logic to all
     // widget modules. See issues #2006 and #2017 for more discussion.
     if (
       (moduleName === '@jupyter-widgets/base' ||
-        moduleName === '@jupyter-widgets/controls') &&
+        moduleName === '@jupyter-widgets/controls' ||
+        moduleName === '@jupyter-widgets/output') &&
       valid(moduleVersion)
     ) {
       moduleVersion = `^${moduleVersion}`;

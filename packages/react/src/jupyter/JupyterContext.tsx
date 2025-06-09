@@ -11,7 +11,6 @@ import { useJupyterReactStoreFromProps } from '../state';
 import { requestAPI } from './JupyterHandlers';
 import { Kernel } from './kernel';
 import { Lite } from './lite';
-import { WebRTCProvider } from './WebRTCContext';
 
 /**
  * The type for Jupyter props.
@@ -170,26 +169,29 @@ const JupyterProvider = JupyterContext.Provider;
 export const useJupyter = (props?: JupyterPropsType): JupyterContextType => {
   const context = useContext(JupyterContext);
 
-  // We are not within a React Context....
-  // so create a JupyterContext from the store based on the provided props.
-  const { jupyterConfig, kernel, kernelIsLoading, serviceManager } =
-    useJupyterReactStoreFromProps(props ?? {});
-
   if (context) {
     // We are within a React Context, just return the JupyterContext.
     // The provided props are irrelevant in this case.
     return context;
   }
 
+  // We are not within a React Context....
+  // so create a JupyterContext from the store based on the provided props.
+  const { jupyterConfig, kernel, kernelIsLoading, serviceManager } =
+    useJupyterReactStoreFromProps(props ?? {});
+
   const storeContext: JupyterContextType = {
     defaultKernel: kernel,
-    jupyterServerUrl: jupyterConfig!.jupyterServerUrl,
+    jupyterServerUrl: jupyterConfig?.jupyterServerUrl ?? 'http://localhost:6000',
     kernel,
     kernelIsLoading,
     kernelManager: serviceManager?.kernels,
     lite: props?.lite,
     serverless: props?.serverless ?? false,
-    serverSettings: serviceManager?.serverSettings,
+    serverSettings: serviceManager?.serverSettings ?? createServerSettings(
+      jupyterConfig?.jupyterServerUrl ?? 'http://localhost:6000',
+      jupyterConfig?.jupyterServerToken ?? ''
+    ),
     serviceManager,
   };
   return storeContext;
@@ -218,9 +220,27 @@ export const createServerSettings = (
   jupyterServerUrl: string,
   jupyterServerToken: string
 ) => {
-  return ServerConnection.makeSettings({
-    baseUrl: jupyterServerUrl,
-    wsUrl: jupyterServerUrl.replace(/^http/, 'ws'),
+  console.log('🔧 createServerSettings called with:', { jupyterServerUrl, jupyterServerToken });
+
+  // Fix malformed URLs - ensure proper format
+  let normalizedUrl = jupyterServerUrl;
+
+  // Remove any trailing slashes
+  normalizedUrl = normalizedUrl.replace(/\/+$/, '');
+
+  // Ensure proper protocol for HTTP URLs
+  if (!normalizedUrl.startsWith('http://') && !normalizedUrl.startsWith('https://')) {
+    // If it's just "localhost:6000" format, add http protocol
+    if (normalizedUrl.match(/^localhost:\d+$/)) {
+      normalizedUrl = `http://${normalizedUrl}`;
+    }
+  }
+
+  console.log('🔧 Normalized URL:', normalizedUrl);
+
+  const serverSettings = ServerConnection.makeSettings({
+    baseUrl: normalizedUrl,
+    wsUrl: normalizedUrl.replace(/^http/, 'ws'),
     token: jupyterServerToken,
     appendToken: true,
     init: {
@@ -229,6 +249,14 @@ export const createServerSettings = (
       cache: 'no-store',
     },
   });
+
+  console.log('🔧 Created serverSettings:', {
+    baseUrl: serverSettings.baseUrl,
+    wsUrl: serverSettings.wsUrl,
+    token: serverSettings.token
+  });
+
+  return serverSettings;
 };
 
 /**
@@ -236,34 +264,55 @@ export const createServerSettings = (
  */
 export const JupyterContextProvider: React.FC<JupyterContextProps> = props => {
   const { children, skeleton } = props;
+
+  console.log('JupyterContextProvider: Initializing with props:', {
+    startDefaultKernel: props.startDefaultKernel,
+    jupyterServerUrl: props.jupyterServerUrl,
+    jupyterServerToken: props.jupyterServerToken,
+    lite: props.lite,
+    serverless: props.serverless
+  });
+
+  // Get the values directly from the store, since we're creating the context
+  // We can't use useJupyter here because it would create a circular dependency
+  const storeValues = useJupyterReactStoreFromProps(props);
+
   const {
-    jupyterServerUrl,
+    jupyterConfig,
     kernel,
     kernelIsLoading,
-    lite,
-    serverSettings,
     serviceManager,
-  } = useJupyter(props);
+  } = storeValues;
+
+  console.log('JupyterContextProvider: Store values:', {
+    hasJupyterConfig: !!jupyterConfig,
+    hasKernel: !!kernel,
+    kernelIsLoading,
+    hasServiceManager: !!serviceManager,
+    serviceManagerReady: serviceManager ? 'exists' : 'none'
+  });
+
+  const contextValue: JupyterContextType = {
+    defaultKernel: kernel,
+    jupyterServerUrl: jupyterConfig?.jupyterServerUrl ?? 'http://localhost:6000',
+    kernel,
+    kernelIsLoading,
+    kernelManager: serviceManager?.kernels,
+    lite: props.lite,
+    serverSettings: serviceManager?.serverSettings ?? createServerSettings(
+      jupyterConfig?.jupyterServerUrl ?? 'http://localhost:6000',
+      jupyterConfig?.jupyterServerToken ?? ''
+    ),
+    serverless: props.serverless ?? false,
+    serviceManager,
+  };
 
   return (
-    <WebRTCProvider>
-      <JupyterProvider
-        value={{
-          defaultKernel: kernel,
-          // FIXME we should not expose sub attributes to promote single source of truth (like URLs coming from serverSettings).
-          jupyterServerUrl,
-          kernel,
-          kernelIsLoading,
-          kernelManager: serviceManager?.kernels,
-          lite,
-          serverSettings,
-          serverless: props.serverless ?? false,
-          serviceManager,
-        }}
-      >
-        {kernelIsLoading && skeleton}
-        {children}
-      </JupyterProvider>
-    </WebRTCProvider>
+
+    <JupyterProvider value={contextValue}>
+      {kernelIsLoading && skeleton}
+      {children}
+    </JupyterProvider>
+
   );
 };

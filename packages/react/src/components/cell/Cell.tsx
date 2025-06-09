@@ -95,7 +95,7 @@ export const Cell = (props: ICellProps) => {
   useEffect(() => {
     const kernelToUse = kernelProps || defaultKernel;
     if (id && serverSettings && kernelToUse) {
-      kernelToUse.ready.then(() => {
+      kernelToUse.ready.then(async () => {
         const adapter = new CellAdapter({
           id,
           type,
@@ -105,6 +105,10 @@ export const Cell = (props: ICellProps) => {
           kernel: kernelToUse,
           boxOptions: {showToolbar}
         });
+        
+        // Wait for the adapter to be fully initialized before proceeding
+        await adapter.waitForInitialization();
+        
         cellsStore.setAdapter(id, adapter);
         cellsStore.setSource(id, source);
         handleCellInitEvents(adapter);

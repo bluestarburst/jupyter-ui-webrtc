@@ -4,7 +4,7 @@
  * MIT License
  */
 
-import { WIDGET_MIMETYPE } from '@jupyter-widgets/html-manager/lib/output_renderers';
+import { WIDGET_MIMETYPE } from '../../jupyter/ipywidgets/classic/output_renderers';
 import { ISharedAttachmentsCell, IYText } from '@jupyter/ydoc';
 import { Cell, ICellModel, MarkdownCell } from '@jupyterlab/cells';
 import { IEditorServices } from '@jupyterlab/codeeditor';

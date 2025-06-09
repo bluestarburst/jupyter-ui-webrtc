@@ -48,7 +48,7 @@ import { runIcon } from '@jupyterlab/ui-components';
 import { createStandaloneCell, YCodeCell, IYText, YMarkdownCell } from '@jupyter/ydoc';
 import { execute as executeOutput } from './../output/OutputExecutor';
 import { ClassicWidgetManager, WIDGET_MIMETYPE, WidgetRenderer } from '../../jupyter/ipywidgets/classic';
-import { requireLoader as loader } from '../../jupyter/ipywidgets/libembed-amd';
+import { widgetManagerRegistry } from './WidgetManagerRegistry';
 import Kernel from '../../jupyter/kernel/Kernel';
 import getMarked from '../notebook/marked/marked';
 import CellCommands from './CellCommands';
@@ -66,6 +66,9 @@ export class CellAdapter {
   private _panel: BoxPanel;
   private _sessionContext: SessionContext;
   private _type: 'code' | 'markdown' | 'raw';
+  private _initializationPromise: Promise<void>;
+  private _iPyWidgetsManager: ClassicWidgetManager;
+  private _registeredKernels: Set<string> = new Set();
 
   public constructor(options: CellAdapter.ICellAdapterOptions) {
     const { id, type, source, outputs, serverSettings, kernel, boxOptions } = options;
@@ -73,10 +76,19 @@ export class CellAdapter {
     this._outputs = outputs;
     this._kernel = kernel;
     this._type = type;
-    this.setupCell(type, source, serverSettings, kernel, boxOptions);
+    this._initializationPromise = this.setupCell(type, source, serverSettings, kernel, boxOptions);
   }
 
-  private setupCell(
+  /**
+   * Wait for the cell adapter to be fully initialized.
+   */
+  public async waitForInitialization(): Promise<void> {
+    await this._initializationPromise;
+  }
+
+
+
+  private async setupCell(
     type = 'code',
     source: string,
     serverSettings: ServerConnection.ISettings,
@@ -208,17 +220,27 @@ export class CellAdapter {
       latexTypesetter: new MathJaxTypesetter(),
       markdownParser: getMarked(languages),
     });
-    const iPyWidgetsClassicManager = new ClassicWidgetManager({ loader });
+    // Get or create widget manager from global registry
+    const manager = widgetManagerRegistry.getOrCreateManager(kernel.connection, this._id);
+    if (!manager) {
+      throw new Error('Failed to create widget manager - no kernel connection');
+    }
+    this._iPyWidgetsManager = manager;
+    
     rendermime.addFactory(
       {
         safe: false,
         mimeTypes: [WIDGET_MIMETYPE],
         createRenderer: options =>
-          new WidgetRenderer(options, iPyWidgetsClassicManager),
+          new WidgetRenderer(options, this._iPyWidgetsManager),
       },
       0
     );
-    iPyWidgetsClassicManager.registerWithKernel(kernel.connection);
+    
+    // Mark this kernel as registered for our tracking
+    if (kernel.connection) {
+      this._registeredKernels.add(kernel.connection.id);
+    }
     const factoryService = new CodeMirrorEditorFactory({
       extensions: editorExtensions(),
       languages,
@@ -253,9 +275,9 @@ export class CellAdapter {
     }
     //
     this._sessionContext.kernelChanged.connect(
-      (_, arg: Session.ISessionConnection.IKernelChangedArgs) => {
+      async (_, arg: Session.ISessionConnection.IKernelChangedArgs) => {
         const kernelConnection = arg.newValue;
-        console.log('Current Jupyter Kernel Connection', kernelConnection);
+        console.log('CellAdapter: SessionContext kernel changed to:', kernelConnection?.id);
         if (kernelConnection && !kernelConnection.handleComms) {
           console.warn(
             'Jupyter Kernel Connection does not handle Comms',
@@ -267,7 +289,7 @@ export class CellAdapter {
             kernelConnection.handleComms
           );
         }
-        iPyWidgetsClassicManager.registerWithKernel(kernelConnection);
+        // Widget manager registration is handled by the global registry
       }
     );
     this._sessionContext.kernelChanged.connect(() => {
@@ -281,6 +303,8 @@ export class CellAdapter {
         }
       });
     });
+
+    // Widget manager registration is handled by the global registry
     // Completer.
     const editor = this._cell.editor;
     const model = new CompleterModel();
@@ -383,6 +407,23 @@ export class CellAdapter {
 
   get kernel(): Kernel {
     return this._kernel;
+  }
+
+  get widgetManager(): ClassicWidgetManager {
+    return this._iPyWidgetsManager;
+  }
+
+  /**
+   * Dispose of the cell adapter and clean up resources.
+   */
+  dispose(): void {
+    // Release the widget manager from the registry
+    if (this._kernel?.connection) {
+      widgetManagerRegistry.releaseManager(this._kernel.connection.id, this._id);
+    }
+    
+    // Clean up other resources
+    this._registeredKernels.clear();
   }
 
   execute = () => {

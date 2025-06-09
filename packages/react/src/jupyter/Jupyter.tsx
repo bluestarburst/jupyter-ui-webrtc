@@ -11,6 +11,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { Colormode, JupyterLabCss, jupyterLabTheme } from '../theme';
 import { loadJupyterConfig } from './JupyterConfig';
 import { JupyterContextProps, JupyterContextProvider } from './JupyterContext';
+import { WebRTCProvider } from './WebRTCContext';
 
 /**
  * Definition of the properties that can be passed
@@ -89,20 +90,22 @@ export const Jupyter = (props: JupyterProps) => {
             {!config.insideJupyterLab && !disableCssLoading && (
               <JupyterLabCss colormode={colormode} />
             )}
-            <JupyterContextProvider
-              collaborative={collaborative}
-              defaultKernelName={defaultKernelName}
-              initCode={initCode}
-              lite={lite}
-              serverless={serverless}
-              serviceManager={serviceManager}
-              skeleton={skeleton}
-              startDefaultKernel={startDefaultKernel}
-              useRunningKernelId={useRunningKernelId}
-              useRunningKernelIndex={useRunningKernelIndex}
-            >
-              {children}
-            </JupyterContextProvider>
+            <WebRTCProvider>
+              <JupyterContextProvider
+                collaborative={collaborative}
+                defaultKernelName={defaultKernelName}
+                initCode={initCode}
+                lite={lite}
+                serverless={serverless}
+                serviceManager={serviceManager}
+                skeleton={skeleton}
+                startDefaultKernel={startDefaultKernel}
+                useRunningKernelId={useRunningKernelId}
+                useRunningKernelIndex={useRunningKernelIndex}
+              >
+                {children}
+              </JupyterContextProvider>
+            </WebRTCProvider>
           </Box>
         </BaseStyles>
       </ThemeProvider>
